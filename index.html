@@ -5,9 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="HantaTracker - tableau de bord open source de suivi des signalements d'hantavirus, basé sur les données OMS." />
   <title>HantaTracker — Tableau de bord</title>
+
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
+
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
   <script defer src="script.js"></script>
 </head>
 <body>
@@ -30,11 +34,10 @@
   <main>
     <section class="hero">
       <div class="hero-content">
-        <p class="kicker">Données OMS · Projet open source</p>
+        <p class="kicker">Données OMS · Mise à jour automatique</p>
         <h1>Suivi transparent des signalements d’hantavirus</h1>
         <p class="hero-lead">
-          Un tableau de bord clair, vérifiable et public, inspiré de l’esprit CovidTracker,
-          pour suivre les signalements d’hantavirus à partir de sources sanitaires officielles.
+          Tableau de bord open source avec chiffres versionnés, carte mondiale et mise à jour quotidienne via GitHub Actions.
         </p>
 
         <div class="hero-actions">
@@ -46,36 +49,36 @@
       <aside class="hero-card">
         <div class="hero-card-top">
           <span class="pulse"></span>
-          <span>Dernier signalement suivi</span>
+          <span>Dernière synchronisation</span>
         </div>
-        <strong>Cluster MV Hondius</strong>
-        <p>Bulletin OMS du 8 mai 2026. Données initiales consolidées dans le fichier JSON du projet.</p>
+        <strong id="lastUpdate">Chargement…</strong>
+        <p id="eventName">Lecture du fichier de données public.</p>
       </aside>
     </section>
 
     <section class="summary" aria-label="Indicateurs principaux">
       <article class="metric-card">
         <span class="metric-label">Cas totaux</span>
-        <strong id="totalCases">8</strong>
+        <strong id="totalCases">—</strong>
         <p>Confirmés + suspects</p>
       </article>
 
       <article class="metric-card">
         <span class="metric-label">Cas confirmés</span>
-        <strong id="confirmedCases">6</strong>
+        <strong id="confirmedCases">—</strong>
         <p>Confirmation laboratoire</p>
       </article>
 
       <article class="metric-card">
         <span class="metric-label">Cas suspects</span>
-        <strong id="suspectedCases">2</strong>
+        <strong id="suspectedCases">—</strong>
         <p>En investigation</p>
       </article>
 
       <article class="metric-card alert">
         <span class="metric-label">Décès</span>
-        <strong id="deaths">3</strong>
-        <p>Létalité observée : <span id="fatalityRate">37,5%</span></p>
+        <strong id="deaths">—</strong>
+        <p>Létalité observée : <span id="fatalityRate">—</span></p>
       </article>
     </section>
 
@@ -91,56 +94,65 @@
         <div class="chart-wrap">
           <canvas id="casesChart"></canvas>
         </div>
-        <p class="caption">Les points sont fournis comme jeu de données d’exemple, à mettre à jour selon les publications officielles.</p>
+        <p class="caption">La série temporelle est stockée dans <code>data/hantavirus.json</code> et enrichie par le script de synchronisation.</p>
+      </article>
+
+      <article class="panel map-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">Carte</p>
+            <h2>Signalements géographiques</h2>
+          </div>
+          <span class="tag">Monde</span>
+        </div>
+        <div id="worldMap" class="map"></div>
+        <p class="caption">Les marqueurs correspondent aux lieux documentés ou associés dans le fichier de données.</p>
+      </article>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">Signalement majeur</p>
+            <h2 id="clusterTitle">Cluster suivi</h2>
+          </div>
+          <span class="tag danger">Suivi</span>
+        </div>
+
+        <p id="clusterSummary">
+          Chargement des informations depuis le fichier JSON public.
+        </p>
+
+        <div class="detail-grid">
+          <div><strong id="miniTotal">—</strong><span>cas totaux</span></div>
+          <div><strong id="miniConfirmed">—</strong><span>confirmés</span></div>
+          <div><strong id="miniSuspected">—</strong><span>suspects</span></div>
+          <div><strong id="miniDeaths">—</strong><span>décès</span></div>
+        </div>
+
+        <a class="inline-link" href="data.html">Consulter les sources →</a>
       </article>
 
       <article class="panel">
         <div class="panel-heading">
           <div>
-            <p class="kicker">Signalement majeur</p>
-            <h2>Cluster MV Hondius</h2>
+            <p class="kicker">Auto-update</p>
+            <h2>GitHub Actions</h2>
           </div>
-          <span class="tag danger">Suivi</span>
+          <span class="tag success">Daily</span>
         </div>
 
         <p>
-          Le jeu de données initial reprend le bulletin de l’OMS du 8 mai 2026 concernant un
-          cluster de cas d’hantavirus associé au navire MV Hondius.
+          Un workflow GitHub Actions exécute <code>scripts/update-data.js</code> chaque jour.
+          Le script relit la page OMS configurée, extrait les chiffres principaux et met à jour le JSON si nécessaire.
         </p>
 
-        <div class="detail-grid">
-          <div>
-            <strong>8</strong>
-            <span>cas totaux</span>
-          </div>
-          <div>
-            <strong>6</strong>
-            <span>confirmés</span>
-          </div>
-          <div>
-            <strong>2</strong>
-            <span>suspects</span>
-          </div>
-          <div>
-            <strong>3</strong>
-            <span>décès</span>
-          </div>
+        <div class="source-list">
+          <a href="data/hantavirus.json">Ouvrir le JSON</a>
+          <a href="github.html">Voir le fonctionnement</a>
         </div>
-
-        <a class="inline-link" href="data.html">Consulter les sources →</a>
       </article>
-    </section>
-
-    <section class="wide-panel">
-      <div>
-        <p class="kicker">Transparence</p>
-        <h2>Des données simples à vérifier</h2>
-        <p>
-          Les chiffres affichés sont stockés dans un fichier JSON public, versionné sur GitHub.
-          Chaque mise à jour peut être relue, corrigée ou améliorée via une contribution.
-        </p>
-      </div>
-      <a class="button secondary" href="github.html">Fonctionnement GitHub</a>
     </section>
   </main>
 

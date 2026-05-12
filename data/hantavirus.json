@@ -1,13 +1,19 @@
 {
   "lastUpdate": "2026-05-08",
   "source": "World Health Organization - Disease Outbreak News",
-  "sourceUrl": "https://www.who.int/emergencies/disease-outbreak-news",
-  "event": "Cluster associated with MV Hondius",
+  "sourceUrl": "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON600",
+  "event": "Cluster associé au MV Hondius",
+  "summary": "Le jeu de données initial reprend le bulletin OMS du 8 mai 2026 concernant un cluster de cas d’hantavirus associé au navire MV Hondius.",
   "totalCases": 8,
   "confirmedCases": 6,
   "suspectedCases": 2,
   "deaths": 3,
   "fatalityRate": "37,5%",
+  "autoUpdate": {
+    "enabled": true,
+    "script": "scripts/update-data.js",
+    "workflow": ".github/workflows/update-data.yml"
+  },
   "timeline": [
     {
       "date": "01/05",
@@ -48,6 +54,32 @@
       "date": "08/05",
       "total": 8,
       "confirmed": 6
+    }
+  ],
+  "locations": [
+    {
+      "name": "MV Hondius - signalement initial",
+      "lat": 14.92,
+      "lon": -23.51,
+      "cases": 8,
+      "type": "cluster",
+      "note": "Zone indicative liée au signalement initial dans l’Atlantique."
+    },
+    {
+      "name": "Pays-Bas - suivi sanitaire",
+      "lat": 52.13,
+      "lon": 5.29,
+      "cases": 1,
+      "type": "followup",
+      "note": "Point de suivi indicatif, à ajuster selon les sources."
+    },
+    {
+      "name": "Afrique du Sud - prise en charge",
+      "lat": -30.56,
+      "lon": 22.94,
+      "cases": 1,
+      "type": "followup",
+      "note": "Point de suivi indicatif, à ajuster selon les sources."
     }
   ]
 }

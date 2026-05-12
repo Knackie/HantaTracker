@@ -2,63 +2,41 @@
 
 HantaTracker is an independent open-source web dashboard for tracking documented Hantavirus reports using public health sources.
 
-The project is designed as a lightweight static website compatible with GitHub Pages.
+The project is a lightweight static website compatible with GitHub Pages. It includes automatic JSON updates through GitHub Actions and a Leaflet/OpenStreetMap world map.
 
 ## Features
 
 - Clean public dashboard
-- Key Hantavirus indicators
+- Hantavirus indicators
 - Chart-based case evolution
+- World map using Leaflet
 - Public JSON dataset
-- Source and methodology page
-- Prevention page
-- GitHub transparency page
+- Daily GitHub Actions update
 - No backend required
 
 ## Data
 
-The initial dataset is stored in:
+The main dataset is stored in:
 
 ```txt
 data/hantavirus.json
 ```
 
-The current version uses public information from the World Health Organization Disease Outbreak News.
-
-## Project structure
+The update script is:
 
 ```txt
-/
-├── index.html
-├── data.html
-├── prevention.html
-├── github.html
-├── style.css
-├── script.js
-├── data/
-│   └── hantavirus.json
-└── README.md
+scripts/update-data.js
 ```
 
-## Local use
-
-Open `index.html` directly in a browser, or run a small local server:
-
-```bash
-python -m http.server 8080
-```
-
-Then open:
+The scheduled workflow is:
 
 ```txt
-http://localhost:8080
+.github/workflows/update-data.yml
 ```
 
 ## GitHub Pages deployment
 
-Push the files to a GitHub repository, then enable GitHub Pages from the repository settings.
-
-Recommended settings:
+Use:
 
 ```txt
 Source: Deploy from a branch
@@ -66,10 +44,12 @@ Branch: main
 Folder: /root
 ```
 
-The site will be available at:
+## Manual data update
+
+From the repository Actions tab, run:
 
 ```txt
-https://USERNAME.github.io/REPOSITORY/
+Update HantaTracker data
 ```
 
 ## Disclaimer

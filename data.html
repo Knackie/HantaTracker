@@ -23,44 +23,35 @@
     <section class="page-title">
       <p class="kicker">Méthodologie</p>
       <h1>Données et sources</h1>
-      <p>Cette page explique d’où viennent les chiffres, comment ils sont stockés et comment les mettre à jour.</p>
+      <p>Les chiffres sont stockés dans un fichier JSON public et mis à jour par GitHub Actions à partir de la page OMS configurée.</p>
     </section>
 
     <section class="content-grid">
       <article class="panel">
         <p class="kicker">Source principale</p>
         <h2>Organisation mondiale de la Santé</h2>
-        <p>
-          Le jeu de données initial est basé sur un bulletin Disease Outbreak News de l’OMS.
-          Le fichier local <code>data/hantavirus.json</code> contient les valeurs utilisées par le tableau de bord.
-        </p>
-        <a class="inline-link" href="https://www.who.int/emergencies/disease-outbreak-news" target="_blank" rel="noopener">Voir les bulletins OMS →</a>
+        <p>Le script lit la page Disease Outbreak News configurée dans <code>scripts/update-data.js</code>.</p>
+        <a class="inline-link" href="https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON600" target="_blank" rel="noopener">Voir la source OMS →</a>
       </article>
 
       <article class="panel">
         <p class="kicker">Format</p>
         <h2>JSON public</h2>
-        <p>
-          Les données sont volontairement simples : date de mise à jour, source, cas totaux,
-          cas confirmés, cas suspects, décès et série temporelle.
-        </p>
+        <p>Le fichier contient les indicateurs, la série temporelle et les coordonnées utilisées pour la carte.</p>
         <pre><code>{
   "totalCases": 8,
   "confirmedCases": 6,
-  "suspectedCases": 2,
-  "deaths": 3
+  "deaths": 3,
+  "locations": []
 }</code></pre>
       </article>
     </section>
 
     <section class="wide-panel">
       <div>
-        <p class="kicker">Important</p>
-        <h2>Lecture prudente des chiffres</h2>
-        <p>
-          Les chiffres affichés concernent uniquement les signalements documentés dans la source utilisée.
-          Ils ne représentent pas une estimation exhaustive de tous les cas possibles dans le monde.
-        </p>
+        <p class="kicker">Auto-update</p>
+        <h2>Mise à jour quotidienne</h2>
+        <p>Le workflow <code>.github/workflows/update-data.yml</code> peut être lancé manuellement ou automatiquement chaque matin.</p>
       </div>
       <a class="button secondary" href="data/hantavirus.json">Ouvrir le JSON</a>
     </section>
