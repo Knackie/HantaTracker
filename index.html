@@ -1,73 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HantaTracker — Suivi hantavirus</title>
-  <meta name="description" content="Tableau de bord open data sur les signalements d’hantavirus, basé sur les publications OMS et publié via GitHub Pages." />
-  <link rel="stylesheet" href="assets/styles.css" />
-  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="assets/app.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HantaTracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header class="hero">
-    <nav class="nav">
-      <a class="brand" href="index.html">HantaTracker</a>
-      <div class="nav-links">
-        <a href="index.html">Tableau de bord</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="index.html" class="brand">HANTA<span>TRACKER</span></a>
+      <nav>
+        <a class="active" href="index.html">Tableau de bord</a>
         <a href="data.html">Données</a>
         <a href="prevention.html">Prévention</a>
         <a href="github.html">GitHub</a>
-      </div>
-    </nav>
-    <section class="hero-content">
-      <p class="eyebrow">Open data santé publique</p>
-      <h1>Suivi transparent des signalements d’hantavirus</h1>
-      <p class="lead">Un tableau de bord inspiré de CovidTracker, centré sur les données OMS, avec une traçabilité publique via GitHub.</p>
-      <div class="hero-actions">
-        <a class="button primary" href="data.html">Voir les sources</a>
-        <a class="button secondary" href="github.html">Voir le dépôt</a>
-      </div>
-    </section>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section class="container status-row" id="status"></section>
+  <main class="page">
+    <section class="intro card">
+      <div>
+        <p class="eyebrow">Données OMS · Projet open source</p>
+        <h1>Suivi transparent des signalements d’hantavirus</h1>
+        <p>
+          Un tableau de bord inspiré de CovidTracker, centré sur les données OMS,
+          avec une traçabilité publique via GitHub.
+        </p>
+      </div>
+      <div class="intro-actions">
+        <a href="data.html">Voir les sources</a>
+        <a href="https://github.com/knackie/HantaTracker" target="_blank">Voir le dépôt</a>
+      </div>
+    </section>
 
-    <section class="container grid two-cols">
-      <article class="card large-card">
-        <div class="card-header">
+    <section class="stats">
+      <article class="stat card">
+        <span>Cas totaux</span>
+        <strong>8</strong>
+        <p>confirmés + suspects</p>
+      </article>
+
+      <article class="stat card">
+        <span>Cas confirmés</span>
+        <strong>6</strong>
+        <p>confirmation laboratoire</p>
+      </article>
+
+      <article class="stat card">
+        <span>Décès</span>
+        <strong>3</strong>
+        <p>signalés dans la source</p>
+      </article>
+
+      <article class="stat card">
+        <span>Létalité observée</span>
+        <strong>37.5%</strong>
+        <p>sur ce cluster uniquement</p>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="card panel">
+        <div class="panel-head">
           <div>
             <p class="eyebrow">Évolution</p>
             <h2>Cas suivis</h2>
           </div>
           <span class="badge">OMS</span>
         </div>
-        <canvas id="casesChart" height="110"></canvas>
+        <canvas id="casesChart"></canvas>
       </article>
 
-      <article class="card">
-        <p class="eyebrow">Dernier bulletin</p>
-        <h2 id="eventTitle">Chargement…</h2>
-        <p id="eventSummary" class="muted"></p>
-        <dl class="meta-list">
-          <div><dt>Dernière mise à jour</dt><dd id="lastUpdate">—</dd></div>
-          <div><dt>Source principale</dt><dd id="mainSource">—</dd></div>
-          <div><dt>Zone</dt><dd id="area">—</dd></div>
-        </dl>
+      <article class="card panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Signalement majeur</p>
+            <h2>Cluster MV Hondius</h2>
+          </div>
+          <span class="badge danger">Alerte</span>
+        </div>
+        <p>
+          Le jeu de données initial est basé sur le bulletin OMS du 8 mai 2026
+          concernant un cluster de cas d’hantavirus associé au navire MV Hondius.
+        </p>
+        <div class="mini-list">
+          <div><strong>8</strong><span>cas totaux</span></div>
+          <div><strong>6</strong><span>confirmés</span></div>
+          <div><strong>2</strong><span>suspects</span></div>
+          <div><strong>3</strong><span>décès</span></div>
+        </div>
       </article>
     </section>
 
-    <section class="container grid three-cols" id="regions"></section>
-
-    <section class="container card notice">
-      <h2>Important</h2>
-      <p>Ce site n’est pas un outil médical et ne remplace pas les recommandations des autorités sanitaires. Les chiffres affichés proviennent du fichier local <code>data/hantavirus.json</code>, à mettre à jour avec les publications officielles.</p>
+    <section class="card source">
+      <h2>Transparence des données</h2>
+      <p>
+        HantaTracker est un projet indépendant. Les données affichées sont
+        documentées, sourcées et publiées avec le code du site afin de faciliter
+        la vérification et les contributions.
+      </p>
+      <a href="data.html">Consulter la méthodologie →</a>
     </section>
   </main>
 
-  <footer class="footer">
-    <p>Projet open source publié avec GitHub Pages. Données à vérifier systématiquement auprès des sources officielles.</p>
+  <footer>
+    HantaTracker — Projet indépendant et informatif. Ne remplace pas les recommandations des autorités sanitaires.
   </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
