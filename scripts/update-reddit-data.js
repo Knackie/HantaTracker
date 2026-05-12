@@ -1,7 +1,6 @@
 const fs = require("fs");
 const https = require("https");
-
-const POST_URL = "https://www.reddit.com/r/ContagionCuriosity/comments/1t5i3u3/hantavirus_outbreak_timeline/.json";
+const POST_URL = "https://old.reddit.com/r/ContagionCuriosity/comments/1t5i3u3/hantavirus_outbreak_timeline/.json?raw_json=1";
 const OUTPUT = "data/reddit_hantavirus.json";
 
 const COORDS = [
@@ -37,14 +36,44 @@ const COORDS = [
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, { headers: { "User-Agent": "HantaTrackerCommunityBot/1.0" } }, response => {
-      let body = "";
-      response.on("data", chunk => body += chunk);
-      response.on("end", () => {
-        try { resolve(JSON.parse(body)); }
-        catch (error) { reject(new Error(`Invalid Reddit JSON: ${body.slice(0, 200)}`)); }
-      });
-    }).on("error", reject);
+    https
+      .get(
+        url,
+        {
+          headers: {
+            "User-Agent": "HantaTrackerCommunityBot/1.0 by /u/Knackie",
+            "Accept": "application/json",
+          },
+        },
+        (response) => {
+          if (
+            response.statusCode >= 300 &&
+            response.statusCode < 400 &&
+            response.headers.location
+          ) {
+            resolve(fetchJson(response.headers.location));
+            return;
+          }
+
+          let body = "";
+
+          response.on("data", (chunk) => {
+            body += chunk;
+          });
+
+          response.on("end", () => {
+            try {
+              resolve(JSON.parse(body));
+            } catch (error) {
+              console.log("HTTP status:", response.statusCode);
+              console.log("Content-Type:", response.headers["content-type"]);
+              console.log(body.slice(0, 1000));
+              reject(new Error("Invalid Reddit JSON"));
+            }
+          });
+        }
+      )
+      .on("error", reject);
   });
 }
 
