@@ -1,31 +1,45 @@
-# HantaTracker — Reddit community parser
+# HantaTracker — ArcGIS only
 
-This version parses a Reddit community timeline and converts it into a JSON dataset used by Chart.js and Leaflet.
-
-## Important warning
-
-Reddit is not an official public health source. This version must be labelled as community / unverified data.
-
-Use it for watch and visualization only. Cross-check with WHO, ECDC, national public health agencies or verified ArcGIS layers.
+HantaTracker is a static GitHub Pages dashboard that converts a public ArcGIS Dashboard layer into a lightweight JSON dataset used by Chart.js and Leaflet.
 
 ## Source
 
+ArcGIS Dashboard:
+
 ```txt
-https://www.reddit.com/r/ContagionCuriosity/comments/1t5i3u3/hantavirus_outbreak_timeline/
+https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729
+```
+
+Detected ArcGIS item:
+
+```txt
+b8e81eac2762420fac16601290f547f6
+```
+
+Detected dashboard layer id:
+
+```txt
+19dff6a5782-layer-2
 ```
 
 ## Auto update
 
+The workflow is stored in:
+
 ```txt
-.github/workflows/update-reddit-data.yml
-scripts/update-reddit-data.js
-data/reddit_hantavirus.json
+.github/workflows/update-arcgis-data.yml
 ```
 
-Run manually from GitHub Actions:
+It runs:
 
 ```txt
-Update Reddit community HantaTracker data
+node scripts/update-arcgis-data.js
+```
+
+and generates:
+
+```txt
+data/arcgis_hantavirus.json
 ```
 
 ## GitHub Pages
@@ -37,3 +51,15 @@ Source: Deploy from a branch
 Branch: main
 Folder: /root
 ```
+
+## Manual workflow run
+
+Open GitHub Actions and run:
+
+```txt
+Update ArcGIS HantaTracker data
+```
+
+## Disclaimer
+
+This is an independent informational project. It does not replace official public health guidance.
