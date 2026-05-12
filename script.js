@@ -180,6 +180,8 @@ loadData().then((data) => {
   setText("confirmedCases", data.confirmedCases ?? 0);
   setText("suspectedCases", data.suspectedCases ?? 0);
   setText("deaths", data.deaths ?? 0);
+  setText("monitoringCases", data.monitoring ?? 0);
+  setText("totalRecords", data.totalRecords ?? 0);
   setText("miniTotal", data.totalCases ?? 0);
   setText("miniConfirmed", data.confirmedCases ?? 0);
   setText("miniSuspected", data.suspectedCases ?? 0);
