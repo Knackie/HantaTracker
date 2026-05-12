@@ -1,54 +1,24 @@
 {
   "lastUpdate": "2026-05-08",
-  "source": "World Health Organization - Disease Outbreak News",
+  "source": "World Health Organization - Disease Outbreak News DON600",
   "sourceUrl": "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON600",
-  "event": "Cluster associé au MV Hondius",
-  "summary": "Le jeu de données initial reprend le bulletin OMS du 8 mai 2026 concernant un cluster de cas d’hantavirus associé au navire MV Hondius.",
+  "event": "Cluster OMS lié au MV Hondius",
+  "summary": "Données initiales issues du bulletin OMS DON600 du 8 mai 2026 : 8 cas documentés, dont 6 confirmés en laboratoire et 2 probables, avec 3 décès. La carte représente un événement non territorial lié à un navire, pas une incidence nationale.",
   "totalCases": 8,
   "confirmedCases": 6,
-  "suspectedCases": 2,
+  "probableCases": 2,
   "deaths": 3,
-  "fatalityRate": "37,5%",
-  "autoUpdate": {
-    "enabled": true,
-    "script": "scripts/update-data.js",
-    "workflow": ".github/workflows/update-data.yml"
+  "fatalityRate": "38%",
+  "definitionNotes": {
+    "documentedCases": "Cas publiés dans la source officielle utilisée. Ne correspond pas à une estimation globale.",
+    "probableCases": "Cas probables selon la formulation OMS du bulletin DON600.",
+    "map": "Les marqueurs représentent des événements documentés ou des zones indicatives lorsque l'événement est non territorial. Ils ne sont pas des cas par pays."
   },
   "timeline": [
     {
-      "date": "01/05",
-      "total": 1,
-      "confirmed": 0
-    },
-    {
-      "date": "02/05",
-      "total": 1,
-      "confirmed": 0
-    },
-    {
-      "date": "03/05",
-      "total": 2,
-      "confirmed": 1
-    },
-    {
       "date": "04/05",
-      "total": 3,
+      "total": 7,
       "confirmed": 2
-    },
-    {
-      "date": "05/05",
-      "total": 4,
-      "confirmed": 3
-    },
-    {
-      "date": "06/05",
-      "total": 6,
-      "confirmed": 4
-    },
-    {
-      "date": "07/05",
-      "total": 6,
-      "confirmed": 5
     },
     {
       "date": "08/05",
@@ -56,30 +26,19 @@
       "confirmed": 6
     }
   ],
-  "locations": [
+  "events": [
     {
-      "name": "MV Hondius - signalement initial",
+      "name": "Cluster OMS lié au MV Hondius",
       "lat": 14.92,
       "lon": -23.51,
       "cases": 8,
-      "type": "cluster",
-      "note": "Zone indicative liée au signalement initial dans l’Atlantique."
-    },
-    {
-      "name": "Pays-Bas - suivi sanitaire",
-      "lat": 52.13,
-      "lon": 5.29,
-      "cases": 1,
-      "type": "followup",
-      "note": "Point de suivi indicatif, à ajuster selon les sources."
-    },
-    {
-      "name": "Afrique du Sud - prise en charge",
-      "lat": -30.56,
-      "lon": 22.94,
-      "cases": 1,
-      "type": "followup",
-      "note": "Point de suivi indicatif, à ajuster selon les sources."
+      "label": "Événement non territorial",
+      "note": "Point indicatif pour un cluster lié à un navire. Ne représente pas une incidence nationale."
     }
-  ]
+  ],
+  "france": {
+    "source": "Santé publique France - Odissé",
+    "sourceUrl": "https://odisse.santepubliquefrance.fr/explore/dataset/hantavirus/",
+    "note": "Les données françaises sont à traiter séparément. Santé publique France indique une surveillance via le CNR des hantavirus et un biais géographique des demandes de diagnostic, avec plus de demandes dans la zone d'endémie du quart Nord-Est."
+  }
 }
