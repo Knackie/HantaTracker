@@ -1,1 +1,156 @@
-async function loadDashboardData(){const defaults={lastUpdate:"2026-05-08",event:"Cluster OMS lié au MV Hondius",summary:"Données initiales issues du bulletin OMS du 8 mai 2026.",totalCases:8,confirmedCases:6,probableCases:2,deaths:3,fatalityRate:"38%",timeline:[{date:"04/05",total:7,confirmed:2},{date:"08/05",total:8,confirmed:6}],events:[{name:"Cluster OMS lié au MV Hondius",lat:14.92,lon:-23.51,cases:8,label:"Événement non territorial",note:"Point indicatif pour un cluster lié à un navire. Ne représente pas une incidence nationale."}]};try{const r=await fetch("data/hantavirus.json",{cache:"no-store"});if(!r.ok)return defaults;return await r.json()}catch{return defaults}}function setText(id,value){const e=document.getElementById(id);if(e)e.textContent=value}function renderChart(data){const canvas=document.getElementById("casesChart");if(!canvas||typeof Chart==="undefined")return;const timeline=data.timeline||[];new Chart(canvas,{type:"line",data:{labels:timeline.map(i=>i.date),datasets:[{label:"Cas documentés",data:timeline.map(i=>i.total),borderColor:"#1479d6",backgroundColor:"rgba(20,121,214,.14)",pointBackgroundColor:"#1479d6",pointBorderColor:"#fff",pointBorderWidth:2,pointRadius:5,pointHoverRadius:7,borderWidth:3,fill:true,tension:.25},{label:"Cas confirmés",data:timeline.map(i=>i.confirmed),borderColor:"#d92d20",backgroundColor:"rgba(217,45,32,.08)",pointBackgroundColor:"#d92d20",pointBorderColor:"#fff",pointBorderWidth:2,pointRadius:5,pointHoverRadius:7,borderWidth:3,fill:true,tension:.25}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:"index"},plugins:{legend:{position:"top",align:"end",labels:{boxWidth:10,boxHeight:10,usePointStyle:true,color:"#475467",font:{family:"Inter",size:13,weight:"700"}}},tooltip:{backgroundColor:"#101828",padding:12,titleFont:{family:"Inter",size:13,weight:"700"},bodyFont:{family:"Inter",size:13}}},scales:{y:{beginAtZero:true,suggestedMax:Math.max(10,...timeline.map(i=>i.total||0))+1,ticks:{stepSize:1,color:"#667085"},grid:{color:"rgba(16,24,40,.08)"},border:{display:false}},x:{ticks:{color:"#667085"},grid:{color:"rgba(16,24,40,.05)"},border:{display:false}}}}})}function renderMap(data){const el=document.getElementById("worldMap");if(!el||typeof L==="undefined")return;const map=L.map("worldMap",{scrollWheelZoom:false,worldCopyJump:true}).setView([20,-15],2);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:7,attribution:"&copy; OpenStreetMap"}).addTo(map);const events=data.events||[];events.forEach(ev=>{const marker=L.circleMarker([ev.lat,ev.lon],{radius:16,color:"#d92d20",weight:2,fillColor:"#d92d20",fillOpacity:.22}).addTo(map);marker.bindPopup(`<strong>${ev.name}</strong><br>${ev.cases??"—"} cas documentés<br><small>${ev.label||""}</small><br><small>${ev.note||""}</small>`)});if(events.length>1){const bounds=L.latLngBounds(events.map(ev=>[ev.lat,ev.lon]));map.fitBounds(bounds.pad(.3))}}loadDashboardData().then(data=>{setText("lastUpdate",data.lastUpdate||"Non renseignée");setText("eventName",data.event||"Signalement suivi");setText("totalCases",data.totalCases??"—");setText("confirmedCases",data.confirmedCases??"—");setText("probableCases",data.probableCases??"—");setText("deaths",data.deaths??"—");setText("fatalityRate",data.fatalityRate||"—");setText("clusterTitle",data.event||"Cluster suivi");setText("clusterSummary",data.summary||"Informations chargées depuis le fichier JSON public.");setText("miniTotal",data.totalCases??"—");setText("miniConfirmed",data.confirmedCases??"—");setText("miniProbable",data.probableCases??"—");setText("miniDeaths",data.deaths??"—");renderChart(data);renderMap(data)});
+async function loadData() {
+  const fallback = {
+    lastUpdate: "Non synchronisé",
+    sourceName: "ArcGIS Dashboard",
+    sourceLayerUrl: "",
+    totalCases: 0,
+    confirmedCases: 0,
+    suspectedCases: 0,
+    deaths: 0,
+    timeline: [],
+    records: []
+  };
+
+  try {
+    const response = await fetch("data/arcgis_hantavirus.json", { cache: "no-store" });
+    if (!response.ok) return fallback;
+    return await response.json();
+  } catch {
+    return fallback;
+  }
+}
+
+function setText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = value;
+}
+
+function colorForStatus(status) {
+  const s = String(status || "").toLowerCase();
+  if (s.includes("death") || s.includes("deceased") || s.includes("décès")) return "#d92d20";
+  if (s.includes("confirm")) return "#1479d6";
+  if (s.includes("suspect") || s.includes("probable")) return "#f79009";
+  return "#667085";
+}
+
+function renderChart(data) {
+  const canvas = document.getElementById("casesChart");
+  if (!canvas || typeof Chart === "undefined") return;
+
+  const timeline = data.timeline || [];
+
+  new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: timeline.map(item => item.date),
+      datasets: [
+        {
+          label: "Cas documentés",
+          data: timeline.map(item => item.total),
+          borderColor: "#1479d6",
+          backgroundColor: "rgba(20,121,214,.14)",
+          fill: true,
+          tension: .25,
+          pointRadius: 4,
+          borderWidth: 3
+        },
+        {
+          label: "Confirmés",
+          data: timeline.map(item => item.confirmed),
+          borderColor: "#079455",
+          backgroundColor: "rgba(7,148,85,.08)",
+          fill: true,
+          tension: .25,
+          pointRadius: 4,
+          borderWidth: 3
+        },
+        {
+          label: "Décès",
+          data: timeline.map(item => item.deaths),
+          borderColor: "#d92d20",
+          backgroundColor: "rgba(217,45,32,.08)",
+          fill: true,
+          tension: .25,
+          pointRadius: 4,
+          borderWidth: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: "index" },
+      plugins: {
+        legend: { position: "top", align: "end", labels: { usePointStyle: true, color: "#475467", font: { family: "Inter", weight: "700" } } },
+        tooltip: { backgroundColor: "#101828", padding: 12 }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, color: "#667085" }, grid: { color: "rgba(16,24,40,.08)" }, border: { display: false } },
+        x: { ticks: { color: "#667085" }, grid: { color: "rgba(16,24,40,.05)" }, border: { display: false } }
+      }
+    }
+  });
+}
+
+function renderMap(data) {
+  const mapElement = document.getElementById("worldMap");
+  if (!mapElement || typeof L === "undefined") return;
+
+  const map = L.map("worldMap", { scrollWheelZoom: false, worldCopyJump: true }).setView([20, 0], 2);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 8,
+    attribution: "&copy; OpenStreetMap"
+  }).addTo(map);
+
+  const records = (data.records || []).filter(item => Number.isFinite(item.lat) && Number.isFinite(item.lon));
+
+  records.forEach(item => {
+    const color = colorForStatus(item.status);
+    const marker = L.circleMarker([item.lat, item.lon], {
+      radius: 10,
+      color,
+      weight: 2,
+      fillColor: color,
+      fillOpacity: .24
+    }).addTo(map);
+
+    marker.bindPopup(`
+      <strong>${item.title || item.country || "Cas documenté"}</strong><br>
+      Statut : ${item.status || "Non renseigné"}<br>
+      Pays : ${item.country || "Non renseigné"}<br>
+      Date : ${item.date || "Non renseignée"}
+    `);
+  });
+
+  if (records.length > 1) {
+    const bounds = L.latLngBounds(records.map(item => [item.lat, item.lon]));
+    map.fitBounds(bounds.pad(.25));
+  }
+}
+
+loadData().then(data => {
+  setText("lastUpdate", data.lastUpdate || "Non renseignée");
+  setText("dataSourceName", data.sourceName || "ArcGIS Dashboard");
+  setText("totalCases", data.totalCases ?? 0);
+  setText("confirmedCases", data.confirmedCases ?? 0);
+  setText("suspectedCases", data.suspectedCases ?? 0);
+  setText("deaths", data.deaths ?? 0);
+  setText("miniTotal", data.totalCases ?? 0);
+  setText("miniConfirmed", data.confirmedCases ?? 0);
+  setText("miniSuspected", data.suspectedCases ?? 0);
+  setText("miniDeaths", data.deaths ?? 0);
+
+  const layerLink = document.getElementById("featureLayerLink");
+  if (layerLink && data.sourceLayerUrl) {
+    layerLink.href = data.sourceLayerUrl;
+    layerLink.textContent = "Couche ArcGIS détectée";
+  } else if (layerLink) {
+    layerLink.style.display = "none";
+  }
+
+  setText("sourceLayerText", data.sourceLayerUrl ? `Couche utilisée : ${data.sourceLayerUrl}` : "Aucune couche FeatureServer publique détectée dans le JSON généré.");
+
+  renderChart(data);
+  renderMap(data);
+});

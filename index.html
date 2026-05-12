@@ -1,1 +1,92 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="description" content="HantaTracker - tableau de bord open source de suivi des signalements d'hantavirus, basé sur les données OMS."/><title>HantaTracker — Tableau de bord</title><link rel="preconnect" href="https://cdn.jsdelivr.net"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/><link rel="stylesheet" href="style.css"/><script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script><script defer src="script.js"></script></head><body><header class="site-header"><div class="header-inner"><a class="brand" href="index.html" aria-label="Accueil HantaTracker"><span class="brand-icon">HT</span><span class="brand-text">Hanta<span>Tracker</span></span></a><nav class="main-nav" aria-label="Navigation principale"><a class="active" href="index.html">Tableau de bord</a><a href="data.html">Données</a><a href="prevention.html">Prévention</a><a href="github.html">GitHub</a></nav></div></header><main><section class="hero"><div class="hero-content"><p class="kicker">Données OMS · Mise à jour automatique</p><h1>Suivi transparent des signalements d’hantavirus</h1><p class="hero-lead">Tableau de bord open source avec chiffres versionnés, carte cohérente et mise à jour quotidienne via GitHub Actions.</p><div class="hero-actions"><a class="button primary" href="data.html">Voir les données</a><a class="button secondary" href="https://github.com/knackie/HantaTracker" target="_blank" rel="noopener">Voir le dépôt</a></div></div><aside class="hero-card"><div class="hero-card-top"><span class="pulse"></span><span>Dernière synchronisation</span></div><strong id="lastUpdate">Chargement…</strong><p id="eventName">Lecture du fichier de données public.</p></aside></section><section class="summary" aria-label="Indicateurs principaux"><article class="metric-card"><span class="metric-label">Cas documentés</span><strong id="totalCases">—</strong><p>Confirmés + probables</p></article><article class="metric-card"><span class="metric-label">Cas confirmés</span><strong id="confirmedCases">—</strong><p>Confirmation laboratoire</p></article><article class="metric-card"><span class="metric-label">Cas probables</span><strong id="probableCases">—</strong><p>Définition OMS</p></article><article class="metric-card alert"><span class="metric-label">Décès</span><strong id="deaths">—</strong><p>Létalité observée : <span id="fatalityRate">—</span></p></article></section><section class="dashboard-grid"><article class="panel chart-panel"><div class="panel-heading"><div><p class="kicker">Évolution</p><h2>Cas documentés</h2></div><span class="tag">OMS</span></div><div class="chart-wrap"><canvas id="casesChart"></canvas></div><p class="caption">La courbe suit uniquement les chiffres publiés dans le fichier JSON. Elle ne cherche pas à estimer des cas non documentés.</p></article><article class="panel map-panel"><div class="panel-heading"><div><p class="kicker">Carte</p><h2>Événements documentés</h2></div><span class="tag">Monde</span></div><div id="worldMap" class="map"></div><p class="warning-note">La carte n'affiche pas de cas par pays si la source ne les publie pas. Le marqueur MV Hondius représente un événement non territorial lié à un navire, pas une incidence nationale.</p></article></section><section class="dashboard-grid"><article class="panel"><div class="panel-heading"><div><p class="kicker">Signalement majeur</p><h2 id="clusterTitle">Cluster suivi</h2></div><span class="tag danger">Documenté</span></div><p id="clusterSummary">Chargement des informations depuis le fichier JSON public.</p><div class="detail-grid"><div><strong id="miniTotal">—</strong><span>cas documentés</span></div><div><strong id="miniConfirmed">—</strong><span>confirmés</span></div><div><strong id="miniProbable">—</strong><span>probables</span></div><div><strong id="miniDeaths">—</strong><span>décès</span></div></div><a class="inline-link" href="data.html">Consulter les sources →</a></article><article class="panel"><div class="panel-heading"><div><p class="kicker">France</p><h2>Surveillance nationale</h2></div><span class="tag success">SPF</span></div><p>Pour la France, le tableau de bord renvoie aux données Santé publique France plutôt que d'inventer des points. Les données françaises sont surveillées via le CNR des hantavirus et concernent surtout des cas identifiés, souvent hospitalisés.</p><p class="caption">Santé publique France indique un biais géographique des demandes de diagnostic, avec une forte concentration dans la zone d'endémie du quart Nord-Est.</p><div class="source-list"><a href="https://odisse.santepubliquefrance.fr/explore/dataset/hantavirus/" target="_blank" rel="noopener">Dataset Odissé SPF</a><a href="https://www.santepubliquefrance.fr/hantavirus/donnees" target="_blank" rel="noopener">Données Hantavirus SPF</a></div></article></section></main><footer><span>HantaTracker — Projet indépendant et informatif.</span><span>Ne remplace pas les recommandations des autorités sanitaires.</span></footer></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="HantaTracker - tableau de bord open source basé sur des données ArcGIS publiques." />
+  <title>HantaTracker — Tableau de bord</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><span class="brand-icon">HT</span><span class="brand-text">Hanta<span>Tracker</span></span></a>
+      <nav class="main-nav">
+        <a class="active" href="index.html">Tableau de bord</a>
+        <a href="data.html">Données</a>
+        <a href="prevention.html">Prévention</a>
+        <a href="github.html">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <p class="kicker">ArcGIS Dashboard · Mise à jour automatique</p>
+        <h1>Suivi des cas d’hantavirus documentés</h1>
+        <p class="hero-lead">Tableau de bord open source alimenté par la couche ArcGIS publique associée au dashboard fourni, avec carte, compteurs et historique générés automatiquement.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="data.html">Voir les données</a>
+          <a class="button secondary" href="https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729" target="_blank" rel="noopener">Dashboard ArcGIS</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <div class="hero-card-top"><span class="pulse"></span><span>Dernière synchronisation</span></div>
+        <strong id="lastUpdate">Chargement…</strong>
+        <p id="dataSourceName">Lecture du JSON généré depuis ArcGIS.</p>
+      </aside>
+    </section>
+
+    <section class="summary">
+      <article class="metric-card"><span class="metric-label">Cas documentés</span><strong id="totalCases">—</strong><p>Enregistrements ArcGIS</p></article>
+      <article class="metric-card"><span class="metric-label">Confirmés</span><strong id="confirmedCases">—</strong><p>Statut confirmé</p></article>
+      <article class="metric-card"><span class="metric-label">Suspects / probables</span><strong id="suspectedCases">—</strong><p>Statut non confirmé</p></article>
+      <article class="metric-card alert"><span class="metric-label">Décès</span><strong id="deaths">—</strong><p>Statut deceased/death</p></article>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="panel chart-panel">
+        <div class="panel-heading"><div><p class="kicker">Évolution</p><h2>Cas dans le temps</h2></div><span class="tag">ArcGIS</span></div>
+        <div class="chart-wrap"><canvas id="casesChart"></canvas></div>
+        <p class="caption">La courbe est calculée depuis les dates disponibles dans les entités ArcGIS. Si aucune date fiable n’est trouvée, les données sont groupées sur la date de synchronisation.</p>
+      </article>
+
+      <article class="panel map-panel">
+        <div class="panel-heading"><div><p class="kicker">Carte</p><h2>Localisation des cas</h2></div><span class="tag">Leaflet</span></div>
+        <div id="worldMap" class="map"></div>
+        <p class="warning-note">Les marqueurs correspondent aux enregistrements géolocalisés exposés par la couche ArcGIS. Ils ne sont pas une estimation épidémiologique indépendante.</p>
+      </article>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="panel">
+        <div class="panel-heading"><div><p class="kicker">Statuts</p><h2>Répartition</h2></div><span class="tag success">Auto</span></div>
+        <div class="detail-grid">
+          <div><strong id="miniTotal">—</strong><span>cas documentés</span></div>
+          <div><strong id="miniConfirmed">—</strong><span>confirmés</span></div>
+          <div><strong id="miniSuspected">—</strong><span>suspects/probables</span></div>
+          <div><strong id="miniDeaths">—</strong><span>décès</span></div>
+        </div>
+        <a class="inline-link" href="data/arcgis_hantavirus.json">Ouvrir le JSON généré →</a>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading"><div><p class="kicker">Source</p><h2>ArcGIS Feature Layer</h2></div><span class="tag">Live</span></div>
+        <p id="sourceLayerText">Le script tente d’extraire automatiquement les FeatureServer publics utilisés par le dashboard ArcGIS.</p>
+        <div class="source-list">
+          <a href="https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729" target="_blank" rel="noopener">Dashboard source</a>
+          <a id="featureLayerLink" href="#" target="_blank" rel="noopener">Couche détectée</a>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer><span>HantaTracker — Données ArcGIS publiques transformées en JSON.</span><span>Projet indépendant et informatif.</span></footer>
+</body>
+</html>

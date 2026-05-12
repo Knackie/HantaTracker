@@ -1,27 +1,45 @@
 # HantaTracker
 
-HantaTracker is an independent open-source dashboard for tracking documented Hantavirus reports using public health sources.
+HantaTracker is a static GitHub Pages dashboard that converts a public ArcGIS Dashboard into a lightweight JSON dataset used by Chart.js and Leaflet.
 
-The dashboard does not invent country-level case counts. The map displays documented events only. For the MV Hondius cluster, the marker is explicitly labelled as a non-territorial ship-related event, not as national incidence.
+## Source
 
-## Features
+ArcGIS Dashboard:
 
-Clean dashboard, public JSON dataset, Leaflet/OpenStreetMap event map, GitHub Actions automatic update, GitHub Pages compatibility.
+```txt
+https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729
+```
 
-## Data
+## Auto update
 
-Main dataset: `data/hantavirus.json`.
-Update script: `scripts/update-data.js`.
-Workflow: `.github/workflows/update-data.yml`.
+The workflow is stored in:
+
+```txt
+.github/workflows/update-arcgis-data.yml
+```
+
+It runs:
+
+```txt
+node scripts/update-arcgis-data.js
+```
+
+and generates:
+
+```txt
+data/arcgis_hantavirus.json
+```
 
 ## GitHub Pages
 
-Use Deploy from a branch, branch `main`, folder `/root`.
+Use:
+
+```txt
+Source: Deploy from a branch
+Branch: main
+Folder: /root
+```
 
 ## Disclaimer
 
-HantaTracker is an independent informational project. It is not affiliated with the WHO or any public health authority and does not provide medical advice.
-
-## License
-
-MIT
+This is an independent informational project. It does not replace official public health guidance.

@@ -1,11 +1,17 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>HantaTracker — Données</title><link rel="stylesheet" href="style.css"/></head><body><header class="site-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-icon">HT</span><span class="brand-text">Hanta<span>Tracker</span></span></a><nav class="main-nav"><a  href="index.html">Tableau de bord</a><a class="active" href="data.html">Données</a><a  href="prevention.html">Prévention</a><a  href="github.html">GitHub</a></nav></div></header><main><section class="page-title"><p class="kicker">Méthodologie</p><h1>Données et définitions</h1><p>Le tableau de bord distingue les cas documentés, les cas confirmés et les cas probables. La carte n’invente pas de cas par pays.</p></section><section class="content-grid"><article class="panel"><p class="kicker">Source principale</p><h2>Organisation mondiale de la Santé</h2><p>Le script lit la page OMS DON600 configurée dans <code>scripts/update-data.js</code>. Si la page change, le fichier JSON est mis à jour automatiquement.</p><a class="inline-link" href="https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON600" target="_blank" rel="noopener">Voir la source OMS →</a></article><article class="panel"><p class="kicker">Définitions</p><h2>Cas documentés, pas “associés”</h2><p><strong>Cas documentés</strong> signifie : cas publiés dans la source officielle utilisée. Ce n’est pas une estimation globale.</p><p><strong>Cas probables</strong> reprend la formulation OMS lorsqu’un cas est documenté mais non confirmé en laboratoire.</p></article></section><section class="content-grid"><article class="panel"><p class="kicker">France</p><h2>Santé publique France</h2><p>Les données françaises doivent être traitées séparément via Santé publique France / Odissé, car elles relèvent d’une surveillance territoriale différente.</p><a class="inline-link" href="https://odisse.santepubliquefrance.fr/explore/dataset/hantavirus/" target="_blank" rel="noopener">Dataset Odissé SPF →</a></article><article class="panel"><p class="kicker">JSON</p><h2>Structure publique</h2><pre><code>{
-  "totalCases": 8,
-  "confirmedCases": 6,
-  "probableCases": 2,
-  "events": [
-    {
-      "name": "Cluster OMS lié au MV Hondius",
-      "label": "Événement non territorial"
-    }
-  ]
-}</code></pre></article></section><section class="wide-panel"><div><p class="kicker">Auto-update</p><h2>Mise à jour quotidienne</h2><p>Le workflow <code>.github/workflows/update-data.yml</code> peut être lancé manuellement depuis GitHub Actions ou automatiquement chaque matin.</p></div><a class="button secondary" href="data/hantavirus.json">Ouvrir le JSON</a></section></main><footer><span>HantaTracker — Projet indépendant.</span><span>Code et données publics.</span></footer></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>HantaTracker — Données</title><link rel="stylesheet" href="style.css" /></head>
+<body>
+<header class="site-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-icon">HT</span><span class="brand-text">Hanta<span>Tracker</span></span></a><nav class="main-nav"><a href="index.html">Tableau de bord</a><a class="active" href="data.html">Données</a><a href="prevention.html">Prévention</a><a href="github.html">GitHub</a></nav></div></header>
+<main>
+<section class="page-title"><p class="kicker">Pipeline</p><h1>Données ArcGIS transformées en JSON</h1><p>Le script GitHub Actions lit le dashboard ArcGIS, détecte les couches FeatureServer publiques, interroge la couche la plus pertinente et génère le fichier utilisé par le site.</p></section>
+<section class="content-grid">
+<article class="panel"><p class="kicker">Source</p><h2>ArcGIS Dashboard</h2><p>Le dashboard fourni sert de source principale pour la carte et les compteurs. Les données sont récupérées via les endpoints ArcGIS REST publics quand ils sont disponibles.</p><a class="inline-link" href="https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729" target="_blank" rel="noopener">Ouvrir le dashboard →</a></article>
+<article class="panel"><p class="kicker">Fichier généré</p><h2>JSON public</h2><p>Le site lit directement <code>data/arcgis_hantavirus.json</code>.</p><a class="inline-link" href="data/arcgis_hantavirus.json">Ouvrir le JSON →</a></article>
+</section>
+<section class="content-grid">
+<article class="panel"><p class="kicker">Script</p><h2>update-arcgis-data.js</h2><pre><code>node scripts/update-arcgis-data.js</code></pre></article>
+<article class="panel"><p class="kicker">GitHub Actions</p><h2>Mise à jour quotidienne</h2><p>Le workflow se lance tous les jours et peut aussi être exécuté manuellement depuis l’onglet Actions.</p></article>
+</section>
+</main><footer><span>HantaTracker — Données ArcGIS publiques.</span><span>Projet indépendant.</span></footer>
+</body></html>

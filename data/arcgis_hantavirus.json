@@ -1,0 +1,13 @@
+{
+  "lastUpdate": "À générer via GitHub Actions",
+  "sourceName": "ArcGIS Dashboard - Hantavirus",
+  "dashboardId": "5c68442d2afc42d7ba2696e4cd393729",
+  "dashboardUrl": "https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729",
+  "sourceLayerUrl": "",
+  "totalCases": 0,
+  "confirmedCases": 0,
+  "suspectedCases": 0,
+  "deaths": 0,
+  "timeline": [],
+  "records": []
+}
