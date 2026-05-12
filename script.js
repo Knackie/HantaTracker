@@ -1,18 +1,14 @@
 async function loadData() {
   const fallback = {
-    lastUpdate: "Non synchronisé",
-    sourceName: "ArcGIS Dashboard",
-    sourceLayerUrl: "",
-    totalCases: 0,
-    confirmedCases: 0,
-    suspectedCases: 0,
-    deaths: 0,
+    lastParsed: "Non synchronisé",
+    redditLastUpdated: "Non renseigné",
+    counts: { confirmedProbable: 0, labConfirmed: 0, suspected: 0, deaths: 0 },
     timeline: [],
     records: []
   };
 
   try {
-    const response = await fetch("data/arcgis_hantavirus.json", { cache: "no-store" });
+    const response = await fetch("data/reddit_hantavirus.json", { cache: "no-store" });
     if (!response.ok) return fallback;
     return await response.json();
   } catch {
@@ -27,10 +23,11 @@ function setText(id, value) {
 
 function colorForStatus(status) {
   const s = String(status || "").toLowerCase();
-  if (s.includes("death") || s.includes("deceased") || s.includes("décès")) return "#d92d20";
-  if (s.includes("confirm")) return "#1479d6";
-  if (s.includes("suspect") || s.includes("probable")) return "#f79009";
-  return "#667085";
+  if (s.includes("deceased")) return "#d92d20";
+  if (s.includes("confirmed")) return "#1479d6";
+  if (s.includes("probable")) return "#7a5af8";
+  if (s.includes("negative")) return "#667085";
+  return "#f79009";
 }
 
 function renderChart(data) {
@@ -44,50 +41,17 @@ function renderChart(data) {
     data: {
       labels: timeline.map(item => item.date),
       datasets: [
-        {
-          label: "Cas documentés",
-          data: timeline.map(item => item.total),
-          borderColor: "#1479d6",
-          backgroundColor: "rgba(20,121,214,.14)",
-          fill: true,
-          tension: .25,
-          pointRadius: 4,
-          borderWidth: 3
-        },
-        {
-          label: "Confirmés",
-          data: timeline.map(item => item.confirmed),
-          borderColor: "#079455",
-          backgroundColor: "rgba(7,148,85,.08)",
-          fill: true,
-          tension: .25,
-          pointRadius: 4,
-          borderWidth: 3
-        },
-        {
-          label: "Décès",
-          data: timeline.map(item => item.deaths),
-          borderColor: "#d92d20",
-          backgroundColor: "rgba(217,45,32,.08)",
-          fill: true,
-          tension: .25,
-          pointRadius: 4,
-          borderWidth: 3
-        }
+        { label: "Cas listés", data: timeline.map(i => i.cases), borderColor: "#1479d6", backgroundColor: "rgba(20,121,214,.14)", fill: true, tension: .25, pointRadius: 4, borderWidth: 3 },
+        { label: "Suspects", data: timeline.map(i => i.suspected), borderColor: "#f79009", backgroundColor: "rgba(247,144,9,.10)", fill: true, tension: .25, pointRadius: 4, borderWidth: 3 },
+        { label: "Décès", data: timeline.map(i => i.deaths), borderColor: "#d92d20", backgroundColor: "rgba(217,45,32,.08)", fill: true, tension: .25, pointRadius: 4, borderWidth: 3 }
       ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { intersect: false, mode: "index" },
-      plugins: {
-        legend: { position: "top", align: "end", labels: { usePointStyle: true, color: "#475467", font: { family: "Inter", weight: "700" } } },
-        tooltip: { backgroundColor: "#101828", padding: 12 }
-      },
-      scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1, color: "#667085" }, grid: { color: "rgba(16,24,40,.08)" }, border: { display: false } },
-        x: { ticks: { color: "#667085" }, grid: { color: "rgba(16,24,40,.05)" }, border: { display: false } }
-      }
+      plugins: { legend: { position: "top", align: "end", labels: { usePointStyle: true, color: "#475467", font: { family: "Inter", weight: "700" } } }, tooltip: { backgroundColor: "#101828", padding: 12 } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: "#667085" }, grid: { color: "rgba(16,24,40,.08)" }, border: { display: false } }, x: { ticks: { color: "#667085" }, grid: { color: "rgba(16,24,40,.05)" }, border: { display: false } } }
     }
   });
 }
@@ -97,30 +61,14 @@ function renderMap(data) {
   if (!mapElement || typeof L === "undefined") return;
 
   const map = L.map("worldMap", { scrollWheelZoom: false, worldCopyJump: true }).setView([20, 0], 2);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 8,
-    attribution: "&copy; OpenStreetMap"
-  }).addTo(map);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 8, attribution: "&copy; OpenStreetMap" }).addTo(map);
 
   const records = (data.records || []).filter(item => Number.isFinite(item.lat) && Number.isFinite(item.lon));
 
   records.forEach(item => {
     const color = colorForStatus(item.status);
-    const marker = L.circleMarker([item.lat, item.lon], {
-      radius: 10,
-      color,
-      weight: 2,
-      fillColor: color,
-      fillOpacity: .24
-    }).addTo(map);
-
-    marker.bindPopup(`
-      <strong>${item.title || item.country || "Cas documenté"}</strong><br>
-      Statut : ${item.status || "Non renseigné"}<br>
-      Pays : ${item.country || "Non renseigné"}<br>
-      Date : ${item.date || "Non renseignée"}
-    `);
+    const marker = L.circleMarker([item.lat, item.lon], { radius: 10, color, weight: 2, fillColor: color, fillOpacity: .24 }).addTo(map);
+    marker.bindPopup(`<strong>${item.id}</strong><br>${item.status}<br>${item.location || "Lieu déduit"}<br><small>${item.summary || ""}</small>`);
   });
 
   if (records.length > 1) {
@@ -130,26 +78,16 @@ function renderMap(data) {
 }
 
 loadData().then(data => {
-  setText("lastUpdate", data.lastUpdate || "Non renseignée");
-  setText("dataSourceName", data.sourceName || "ArcGIS Dashboard");
-  setText("totalCases", data.totalCases ?? 0);
-  setText("confirmedCases", data.confirmedCases ?? 0);
-  setText("suspectedCases", data.suspectedCases ?? 0);
-  setText("deaths", data.deaths ?? 0);
-  setText("miniTotal", data.totalCases ?? 0);
-  setText("miniConfirmed", data.confirmedCases ?? 0);
-  setText("miniSuspected", data.suspectedCases ?? 0);
-  setText("miniDeaths", data.deaths ?? 0);
-
-  const layerLink = document.getElementById("featureLayerLink");
-  if (layerLink && data.sourceLayerUrl) {
-    layerLink.href = data.sourceLayerUrl;
-    layerLink.textContent = "Couche ArcGIS détectée";
-  } else if (layerLink) {
-    layerLink.style.display = "none";
-  }
-
-  setText("sourceLayerText", data.sourceLayerUrl ? `Couche utilisée : ${data.sourceLayerUrl}` : "Aucune couche FeatureServer publique détectée dans le JSON généré.");
+  setText("lastUpdate", data.lastParsed || "Non renseigné");
+  setText("redditUpdated", data.redditLastUpdated ? `Post Reddit : ${data.redditLastUpdated}` : "Date Reddit non détectée");
+  setText("confirmedProbable", data.counts?.confirmedProbable ?? 0);
+  setText("labConfirmed", data.counts?.labConfirmed ?? 0);
+  setText("suspectedCases", data.counts?.suspected ?? 0);
+  setText("deaths", data.counts?.deaths ?? 0);
+  setText("miniCases", data.caseRecordsCount ?? 0);
+  setText("miniConfirmed", data.counts?.labConfirmed ?? 0);
+  setText("miniSuspected", data.counts?.suspected ?? 0);
+  setText("miniDeaths", data.counts?.deaths ?? 0);
 
   renderChart(data);
   renderMap(data);

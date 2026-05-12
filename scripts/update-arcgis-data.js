@@ -2,158 +2,97 @@ const fs = require("fs");
 const https = require("https");
 
 const DASHBOARD_ID = "5c68442d2afc42d7ba2696e4cd393729";
-const ITEM_ID = "b8e81eac2762420fac16601290f547f6";
-const LAYER_ID = "19dff6a5782-layer-2";
+const DASHBOARD_DATA_URL = `https://www.arcgis.com/sharing/rest/content/items/${DASHBOARD_ID}/data?f=json`;
 const OUTPUT = "data/arcgis_hantavirus.json";
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
-    https
-      .get(url, { headers: { "User-Agent": "HantaTrackerArcGIS/1.0" } }, (res) => {
-        let body = "";
-
-        res.on("data", (chunk) => {
-          body += chunk;
-        });
-
-        res.on("end", () => {
-          try {
-            resolve(JSON.parse(body));
-          } catch (error) {
-            console.log(body.slice(0, 1000));
-            reject(new Error("Invalid JSON"));
-          }
-        });
-      })
-      .on("error", reject);
+    https.get(url, { headers: { "User-Agent": "HantaTrackerArcGIS/1.0" } }, response => {
+      let body = "";
+      response.on("data", chunk => body += chunk);
+      response.on("end", () => {
+        try {
+          resolve(JSON.parse(body));
+        } catch (error) {
+          reject(new Error(`Invalid JSON from ${url}: ${body.slice(0, 120)}`));
+        }
+      });
+    }).on("error", reject);
   });
 }
 
-function findLayer(obj) {
-  if (!obj) return null;
-
-  if (Array.isArray(obj.operationalLayers)) {
-    for (const layer of obj.operationalLayers) {
-      if (layer.id === LAYER_ID) {
-        return layer;
-      }
-
-      if (Array.isArray(layer.layers)) {
-        const subLayer = layer.layers.find((sub) => sub.id === LAYER_ID);
-        if (subLayer) return subLayer;
-      }
-    }
+function walk(value, urls = new Set()) {
+  if (typeof value === "string") {
+    const matches = value.match(/https:\/\/[^"'\\\s]+FeatureServer(?:\/\d+)?/gi);
+    if (matches) matches.forEach(url => urls.add(url.replace(/\/$/, "")));
+  } else if (Array.isArray(value)) {
+    value.forEach(item => walk(item, urls));
+  } else if (value && typeof value === "object") {
+    Object.values(value).forEach(item => walk(item, urls));
   }
+  return urls;
+}
 
-  if (Array.isArray(obj.layers)) {
-    for (const layer of obj.layers) {
-      if (layer.id === LAYER_ID || String(layer.id) === "2") {
-        return layer;
-      }
-    }
-  }
-
-  return null;
+function normalizeLayerUrl(url) {
+  if (/FeatureServer\/\d+$/i.test(url)) return url;
+  return `${url.replace(/\/$/, "")}/0`;
 }
 
 function toLonLat(geometry) {
   if (!geometry) return {};
-
   let x = geometry.x;
   let y = geometry.y;
-
-  if (!Number.isFinite(x) || !Number.isFinite(y)) {
-    return {};
-  }
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return {};
 
   if (Math.abs(x) > 180 || Math.abs(y) > 90) {
-    const lon = (x * 180) / 20037508.34;
-    const lat = (Math.atan(Math.exp((y * Math.PI) / 20037508.34)) * 360) / Math.PI - 90;
+    const lon = x * 180 / 20037508.34;
+    const lat = (Math.atan(Math.exp(y * Math.PI / 20037508.34)) * 360 / Math.PI) - 90;
     return { lon, lat };
   }
 
   return { lon: x, lat: y };
 }
 
-function pick(attrs, names) {
+function pickField(attrs, candidates) {
   const keys = Object.keys(attrs || {});
-  const lower = new Map(keys.map((key) => [key.toLowerCase(), key]));
+  const lower = new Map(keys.map(k => [k.toLowerCase(), k]));
 
-  for (const name of names) {
-    const exact = lower.get(name.toLowerCase());
-    if (exact) return attrs[exact];
+  for (const candidate of candidates) {
+    if (lower.has(candidate.toLowerCase())) return attrs[lower.get(candidate.toLowerCase())];
   }
 
   for (const key of keys) {
-    const normalized = key.toLowerCase();
-    if (names.some((name) => normalized.includes(name.toLowerCase()))) {
-      return attrs[key];
-    }
+    const lk = key.toLowerCase();
+    if (candidates.some(c => lk.includes(c.toLowerCase()))) return attrs[key];
   }
 
   return "";
 }
 
-function clean(value) {
-  if (value === null || value === undefined) return "";
-  return String(value).trim();
+function statusOf(attrs) {
+  return String(pickField(attrs, [
+    "status", "case_status", "classification", "caseclassification", "outcome", "result", "type"
+  ]) || "");
 }
 
-function normalizeStatus(attrs) {
-  return clean(
-    pick(attrs, [
-      "STATUS",
-      "status",
-      "CASE_STATUS",
-      "classification",
-      "outcome",
-      "result",
-      "type",
-    ])
-  );
+function countryOf(attrs) {
+  return String(pickField(attrs, [
+    "country", "country_name", "nation", "location", "place", "admin0", "name"
+  ]) || "");
 }
 
-function normalizeCountry(attrs) {
-  return clean(
-    pick(attrs, [
-      "COUNTRY",
-      "country",
-      "COUNTRY_NAME",
-      "LASTLOCATION",
-      "location",
-      "place",
-      "nation",
-    ])
-  );
+function titleOf(attrs, index) {
+  return String(pickField(attrs, [
+    "title", "name", "case_id", "id", "objectid", "globalid"
+  ]) || `Cas ${index + 1}`);
 }
 
-function normalizeTitle(attrs, index) {
-  return clean(
-    pick(attrs, [
-      "CASE_",
-      "case",
-      "CASE_ID",
-      "id",
-      "OBJECTID",
-      "objectid",
-      "name",
-      "title",
-    ])
-  ) || `Cas ${index + 1}`;
-}
-
-function normalizeDate(attrs) {
-  const raw = pick(attrs, [
-    "DATE",
-    "date",
-    "REPORT_DATE",
-    "reported",
-    "created_date",
-    "last_edited_date",
+function dateOf(attrs) {
+  const raw = pickField(attrs, [
+    "date", "report_date", "reported_date", "onset_date", "created_date", "last_edited_date", "date_reported"
   ]);
 
   if (!raw) return "";
-
   if (typeof raw === "number") {
     const d = new Date(raw);
     if (!isNaN(d)) return d.toISOString().slice(0, 10);
@@ -162,7 +101,7 @@ function normalizeDate(attrs) {
   const d = new Date(raw);
   if (!isNaN(d)) return d.toISOString().slice(0, 10);
 
-  return clean(raw);
+  return String(raw);
 }
 
 function classify(records) {
@@ -171,26 +110,19 @@ function classify(records) {
   let deaths = 0;
 
   for (const record of records) {
-    const status = String(record.status || "").toLowerCase();
+    const s = String(record.status || "").toLowerCase();
 
-    if (status.includes("confirm")) confirmed++;
-    else if (status.includes("suspect") || status.includes("probable")) suspected++;
+    if (s.includes("confirm")) confirmed++;
+    else if (s.includes("suspect") || s.includes("probable")) suspected++;
 
-    if (
-      status.includes("death") ||
-      status.includes("deceased") ||
-      status.includes("décès") ||
-      status.includes("dead")
-    ) {
-      deaths++;
-    }
+    if (s.includes("death") || s.includes("deceased") || s.includes("décès") || s.includes("dead")) deaths++;
   }
 
   return {
     totalCases: records.length,
     confirmedCases: confirmed,
     suspectedCases: suspected,
-    deaths,
+    deaths
   };
 }
 
@@ -199,139 +131,97 @@ function buildTimeline(records) {
 
   for (const record of records) {
     const date = record.date || new Date().toISOString().slice(0, 10);
-
-    if (!buckets.has(date)) {
-      buckets.set(date, {
-        date,
-        total: 0,
-        confirmed: 0,
-        deaths: 0,
-      });
-    }
-
+    if (!buckets.has(date)) buckets.set(date, { date, total: 0, confirmed: 0, deaths: 0 });
     const bucket = buckets.get(date);
-    const status = String(record.status || "").toLowerCase();
-
     bucket.total++;
-
-    if (status.includes("confirm")) {
-      bucket.confirmed++;
-    }
-
-    if (
-      status.includes("death") ||
-      status.includes("deceased") ||
-      status.includes("décès") ||
-      status.includes("dead")
-    ) {
-      bucket.deaths++;
-    }
+    const status = String(record.status || "").toLowerCase();
+    if (status.includes("confirm")) bucket.confirmed++;
+    if (status.includes("death") || status.includes("deceased") || status.includes("décès") || status.includes("dead")) bucket.deaths++;
   }
 
-  let total = 0;
-  let confirmed = 0;
-  let deaths = 0;
+  let runningTotal = 0;
+  let runningConfirmed = 0;
+  let runningDeaths = 0;
 
   return [...buckets.values()]
     .sort((a, b) => String(a.date).localeCompare(String(b.date)))
-    .map((item) => {
-      total += item.total;
-      confirmed += item.confirmed;
-      deaths += item.deaths;
-
+    .map(item => {
+      runningTotal += item.total;
+      runningConfirmed += item.confirmed;
+      runningDeaths += item.deaths;
       return {
         date: item.date.slice(5) || item.date,
-        total,
-        confirmed,
-        deaths,
+        total: runningTotal,
+        confirmed: runningConfirmed,
+        deaths: runningDeaths
       };
     });
 }
 
-async function getLayerUrl() {
-  const itemDataUrl =
-    "https://www.arcgis.com/sharing/rest/content/items/" + ITEM_ID + "/data?f=json";
-
-  const itemData = await fetchJson(itemDataUrl);
-  const layer = findLayer(itemData);
-
-  if (layer && layer.url) {
-    return layer.url.replace(/\/$/, "");
-  }
-
-  const itemInfoUrl =
-    "https://www.arcgis.com/sharing/rest/content/items/" + ITEM_ID + "?f=json";
-
-  const itemInfo = await fetchJson(itemInfoUrl);
-
-  if (itemInfo.url) {
-    return itemInfo.url.replace(/\/$/, "") + "/2";
-  }
-
-  throw new Error("Impossible de trouver l’URL de couche ArcGIS depuis l’itemId.");
-}
-
 async function queryLayer(layerUrl) {
-  const url =
-    layerUrl +
-    "/query?where=1%3D1&outFields=*&returnGeometry=true&f=json";
-
-  const json = await fetchJson(url);
-
-  if (!json.features || !Array.isArray(json.features)) {
-    console.log(JSON.stringify(json, null, 2).slice(0, 2000));
-    throw new Error("La couche ne retourne pas de features.");
-  }
+  const queryUrl = `${layerUrl}/query?where=1%3D1&outFields=*&returnGeometry=true&f=json`;
+  const json = await fetchJson(queryUrl);
+  if (!json.features || !Array.isArray(json.features)) return [];
 
   return json.features.map((feature, index) => {
     const attrs = feature.attributes || {};
     const coords = toLonLat(feature.geometry);
-
     return {
-      title: normalizeTitle(attrs, index),
-      status: normalizeStatus(attrs),
-      country: normalizeCountry(attrs),
-      date: normalizeDate(attrs),
+      title: titleOf(attrs, index),
+      status: statusOf(attrs),
+      country: countryOf(attrs),
+      date: dateOf(attrs),
       lat: coords.lat,
       lon: coords.lon,
-      attributes: attrs,
+      attributes: attrs
     };
   });
 }
 
 async function main() {
-  const layerUrl = await getLayerUrl();
-  console.log("Layer URL:", layerUrl);
+  const dashboard = await fetchJson(DASHBOARD_DATA_URL);
+  const rawUrls = [...walk(dashboard)].map(normalizeLayerUrl);
+  const uniqueUrls = [...new Set(rawUrls)];
 
-  const allRecords = await queryLayer(layerUrl);
-  const records = allRecords.filter(
-    (record) => Number.isFinite(record.lat) && Number.isFinite(record.lon)
-  );
+  if (!uniqueUrls.length) {
+    throw new Error("No public FeatureServer URL detected in dashboard JSON.");
+  }
 
-  const counts = classify(records);
+  let best = { url: "", records: [] };
 
+  for (const url of uniqueUrls) {
+    try {
+      const records = await queryLayer(url);
+      const geoRecords = records.filter(r => Number.isFinite(r.lat) && Number.isFinite(r.lon));
+      if (geoRecords.length > best.records.length) {
+        best = { url, records: geoRecords };
+      }
+    } catch (error) {
+      console.warn(`Skipping ${url}: ${error.message}`);
+    }
+  }
+
+  if (!best.records.length) {
+    throw new Error("FeatureServer detected, but no geolocated records found.");
+  }
+
+  const counts = classify(best.records);
   const output = {
     lastUpdate: new Date().toISOString().slice(0, 10),
     sourceName: "ArcGIS Dashboard - Hantavirus",
     dashboardId: DASHBOARD_ID,
-    dashboardUrl:
-      "https://www.arcgis.com/apps/dashboards/" + DASHBOARD_ID,
-    sourceItemId: ITEM_ID,
-    sourceLayerId: LAYER_ID,
-    sourceLayerUrl: layerUrl,
+    dashboardUrl: `https://www.arcgis.com/apps/dashboards/${DASHBOARD_ID}`,
+    sourceLayerUrl: best.url,
     ...counts,
-    timeline: buildTimeline(records),
-    records,
+    timeline: buildTimeline(best.records),
+    records: best.records
   };
 
   fs.writeFileSync(OUTPUT, JSON.stringify(output, null, 2) + "\n", "utf8");
-
-  console.log(
-    `OK: ${records.length} records, confirmed=${counts.confirmedCases}, suspected=${counts.suspectedCases}, deaths=${counts.deaths}`
-  );
+  console.log(`Wrote ${OUTPUT} from ${best.url} with ${best.records.length} records.`);
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error(error);
   process.exit(1);
 });

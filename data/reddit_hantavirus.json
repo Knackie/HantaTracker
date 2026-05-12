@@ -1,0 +1,17 @@
+{
+  "lastParsed": "À générer via GitHub Actions",
+  "sourceType": "community",
+  "sourceWarning": "Reddit is a community source. Data must be verified against official public health sources.",
+  "redditPostUrl": "https://www.reddit.com/r/ContagionCuriosity/comments/1t5i3u3/hantavirus_outbreak_timeline/",
+  "redditLastUpdated": "",
+  "counts": {
+    "confirmedProbable": 0,
+    "labConfirmed": 0,
+    "suspected": 0,
+    "deaths": 0
+  },
+  "caseRecordsCount": 0,
+  "suspectedRecordsCount": 0,
+  "timeline": [],
+  "records": []
+}

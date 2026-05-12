@@ -4,14 +4,14 @@
 <body>
 <header class="site-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-icon">HT</span><span class="brand-text">Hanta<span>Tracker</span></span></a><nav class="main-nav"><a href="index.html">Tableau de bord</a><a class="active" href="data.html">Données</a><a href="prevention.html">Prévention</a><a href="github.html">GitHub</a></nav></div></header>
 <main>
-<section class="page-title"><p class="kicker">Pipeline</p><h1>Données ArcGIS transformées en JSON</h1><p>Le script GitHub Actions lit le dashboard ArcGIS, détecte les couches FeatureServer publiques, interroge la couche la plus pertinente et génère le fichier utilisé par le site.</p></section>
+<section class="page-title"><p class="kicker">Méthode</p><h1>Parsing Reddit communautaire</h1><p>Le script lit le post Reddit au format JSON, extrait les compteurs, les lignes “Case X”, les lignes “Suspected Case X”, puis génère un fichier JSON utilisé par le site.</p></section>
 <section class="content-grid">
-<article class="panel"><p class="kicker">Source</p><h2>ArcGIS Dashboard</h2><p>Le dashboard fourni sert de source principale pour la carte et les compteurs. Les données sont récupérées via les endpoints ArcGIS REST publics quand ils sont disponibles.</p><a class="inline-link" href="https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729" target="_blank" rel="noopener">Ouvrir le dashboard →</a></article>
-<article class="panel"><p class="kicker">Fichier généré</p><h2>JSON public</h2><p>Le site lit directement <code>data/arcgis_hantavirus.json</code>.</p><a class="inline-link" href="data/arcgis_hantavirus.json">Ouvrir le JSON →</a></article>
+<article class="panel"><p class="kicker">Source</p><h2>Reddit</h2><p>Source communautaire utile pour la veille, mais non officielle. Les données doivent être marquées comme non vérifiées.</p><a class="inline-link" href="https://www.reddit.com/r/ContagionCuriosity/comments/1t5i3u3/hantavirus_outbreak_timeline/" target="_blank" rel="noopener">Ouvrir le post →</a></article>
+<article class="panel"><p class="kicker">JSON</p><h2>Fichier généré</h2><p>Le site lit <code>data/reddit_hantavirus.json</code>.</p><a class="inline-link" href="data/reddit_hantavirus.json">Ouvrir le JSON →</a></article>
 </section>
 <section class="content-grid">
-<article class="panel"><p class="kicker">Script</p><h2>update-arcgis-data.js</h2><pre><code>node scripts/update-arcgis-data.js</code></pre></article>
-<article class="panel"><p class="kicker">GitHub Actions</p><h2>Mise à jour quotidienne</h2><p>Le workflow se lance tous les jours et peut aussi être exécuté manuellement depuis l’onglet Actions.</p></article>
+<article class="panel"><p class="kicker">Commande</p><h2>Script local</h2><pre><code>node scripts/update-reddit-data.js</code></pre></article>
+<article class="panel"><p class="kicker">GitHub Actions</p><h2>Update Reddit community HantaTracker data</h2><p>Le workflow peut être lancé manuellement depuis GitHub Actions ou automatiquement chaque matin.</p></article>
 </section>
-</main><footer><span>HantaTracker — Données ArcGIS publiques.</span><span>Projet indépendant.</span></footer>
+</main><footer><span>HantaTracker — Données communautaires.</span><span>À vérifier avec des sources officielles.</span></footer>
 </body></html>

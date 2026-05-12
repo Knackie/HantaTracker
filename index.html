@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="HantaTracker - tableau de bord open source basé sur des données ArcGIS publiques." />
-  <title>HantaTracker — Tableau de bord</title>
+  <title>HantaTracker — Communauté</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
@@ -28,65 +27,65 @@
   <main>
     <section class="hero">
       <div class="hero-content">
-        <p class="kicker">ArcGIS Dashboard · Mise à jour automatique</p>
-        <h1>Suivi des cas d’hantavirus documentés</h1>
-        <p class="hero-lead">Tableau de bord open source alimenté par la couche ArcGIS publique associée au dashboard fourni, avec carte, compteurs et historique générés automatiquement.</p>
+        <p class="kicker">Reddit community timeline · Données non officielles</p>
+        <h1>Timeline communautaire de l’épisode hantavirus</h1>
+        <p class="hero-lead">Ce mode parse automatiquement le post Reddit fourni pour générer des compteurs, une carte indicative et une courbe. Les chiffres doivent rester marqués comme non vérifiés.</p>
         <div class="hero-actions">
-          <a class="button primary" href="data.html">Voir les données</a>
-          <a class="button secondary" href="https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729" target="_blank" rel="noopener">Dashboard ArcGIS</a>
+          <a class="button primary" href="data.html">Voir la méthode</a>
+          <a class="button secondary" href="https://www.reddit.com/r/ContagionCuriosity/comments/1t5i3u3/hantavirus_outbreak_timeline/" target="_blank" rel="noopener">Post Reddit</a>
         </div>
       </div>
       <aside class="hero-card">
-        <div class="hero-card-top"><span class="pulse"></span><span>Dernière synchronisation</span></div>
+        <div class="hero-card-top"><span class="pulse"></span><span>Dernier parsing</span></div>
         <strong id="lastUpdate">Chargement…</strong>
-        <p id="dataSourceName">Lecture du JSON généré depuis ArcGIS.</p>
+        <p id="redditUpdated">Lecture du JSON généré depuis Reddit.</p>
       </aside>
     </section>
 
     <section class="summary">
-      <article class="metric-card"><span class="metric-label">Cas documentés</span><strong id="totalCases">—</strong><p>Enregistrements ArcGIS</p></article>
-      <article class="metric-card"><span class="metric-label">Confirmés</span><strong id="confirmedCases">—</strong><p>Statut confirmé</p></article>
-      <article class="metric-card"><span class="metric-label">Suspects / probables</span><strong id="suspectedCases">—</strong><p>Statut non confirmé</p></article>
-      <article class="metric-card alert"><span class="metric-label">Décès</span><strong id="deaths">—</strong><p>Statut deceased/death</p></article>
+      <article class="metric-card"><span class="metric-label">Confirmés / probables</span><strong id="confirmedProbable">—</strong><p>Selon le post Reddit</p></article>
+      <article class="metric-card"><span class="metric-label">Confirmés labo</span><strong id="labConfirmed">—</strong><p>Cas listés comme confirmés</p></article>
+      <article class="metric-card"><span class="metric-label">Suspects</span><strong id="suspectedCases">—</strong><p>Inclut négatifs si non retirés du post</p></article>
+      <article class="metric-card alert"><span class="metric-label">Décès</span><strong id="deaths">—</strong><p>Selon la timeline communautaire</p></article>
     </section>
 
     <section class="dashboard-grid">
       <article class="panel chart-panel">
-        <div class="panel-heading"><div><p class="kicker">Évolution</p><h2>Cas dans le temps</h2></div><span class="tag">ArcGIS</span></div>
+        <div class="panel-heading"><div><p class="kicker">Évolution</p><h2>Cas cumulés parsés</h2></div><span class="tag warn">Non officiel</span></div>
         <div class="chart-wrap"><canvas id="casesChart"></canvas></div>
-        <p class="caption">La courbe est calculée depuis les dates disponibles dans les entités ArcGIS. Si aucune date fiable n’est trouvée, les données sont groupées sur la date de synchronisation.</p>
+        <p class="caption">Courbe construite à partir des dates de lignes “Case X” et “Suspected Case X” quand elles sont détectables dans le texte.</p>
       </article>
 
       <article class="panel map-panel">
-        <div class="panel-heading"><div><p class="kicker">Carte</p><h2>Localisation des cas</h2></div><span class="tag">Leaflet</span></div>
+        <div class="panel-heading"><div><p class="kicker">Carte</p><h2>Lieux extraits</h2></div><span class="tag warn">Indicatif</span></div>
         <div id="worldMap" class="map"></div>
-        <p class="warning-note">Les marqueurs correspondent aux enregistrements géolocalisés exposés par la couche ArcGIS. Ils ne sont pas une estimation épidémiologique indépendante.</p>
+        <p class="warning-note">Les coordonnées sont déduites à partir de pays/villes mentionnés. Ce n’est pas une géolocalisation médicale officielle.</p>
       </article>
     </section>
 
     <section class="dashboard-grid">
       <article class="panel">
-        <div class="panel-heading"><div><p class="kicker">Statuts</p><h2>Répartition</h2></div><span class="tag success">Auto</span></div>
+        <div class="panel-heading"><div><p class="kicker">Répartition</p><h2>Statuts extraits</h2></div><span class="tag warn">Reddit</span></div>
         <div class="detail-grid">
-          <div><strong id="miniTotal">—</strong><span>cas documentés</span></div>
-          <div><strong id="miniConfirmed">—</strong><span>confirmés</span></div>
-          <div><strong id="miniSuspected">—</strong><span>suspects/probables</span></div>
+          <div><strong id="miniCases">—</strong><span>cas listés</span></div>
+          <div><strong id="miniConfirmed">—</strong><span>confirmés labo</span></div>
+          <div><strong id="miniSuspected">—</strong><span>suspects</span></div>
           <div><strong id="miniDeaths">—</strong><span>décès</span></div>
         </div>
-        <a class="inline-link" href="data/arcgis_hantavirus.json">Ouvrir le JSON généré →</a>
+        <a class="inline-link" href="data/reddit_hantavirus.json">Ouvrir le JSON Reddit →</a>
       </article>
 
       <article class="panel">
-        <div class="panel-heading"><div><p class="kicker">Source</p><h2>ArcGIS Feature Layer</h2></div><span class="tag">Live</span></div>
-        <p id="sourceLayerText">Le script tente d’extraire automatiquement les FeatureServer publics utilisés par le dashboard ArcGIS.</p>
+        <div class="panel-heading"><div><p class="kicker">Avertissement</p><h2>Source communautaire</h2></div><span class="tag danger">À vérifier</span></div>
+        <p>Reddit peut servir d’agrégateur et d’outil de veille, mais pas de source sanitaire principale. Les données doivent être recoupées avec l’OMS, l’ECDC, les agences nationales ou la couche ArcGIS si elle est publique.</p>
         <div class="source-list">
-          <a href="https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729" target="_blank" rel="noopener">Dashboard source</a>
-          <a id="featureLayerLink" href="#" target="_blank" rel="noopener">Couche détectée</a>
+          <a href="https://www.reddit.com/r/ContagionCuriosity/comments/1t5i3u3/hantavirus_outbreak_timeline/" target="_blank" rel="noopener">Post Reddit source</a>
+          <a href="https://www.who.int/emergencies/disease-outbreak-news" target="_blank" rel="noopener">OMS Disease Outbreak News</a>
         </div>
       </article>
     </section>
   </main>
 
-  <footer><span>HantaTracker — Données ArcGIS publiques transformées en JSON.</span><span>Projet indépendant et informatif.</span></footer>
+  <footer><span>HantaTracker — Données communautaires parsées.</span><span>Ne remplace jamais une source sanitaire officielle.</span></footer>
 </body>
 </html>
