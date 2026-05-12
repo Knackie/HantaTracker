@@ -1,51 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Données — HantaTracker</title>
-  <link rel="stylesheet" href="assets/styles.css" />
-  <script defer src="assets/data.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HantaTracker — Données</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="page-header">
-    <nav class="nav">
-      <a class="brand" href="index.html">HantaTracker</a>
-      <div class="nav-links">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><span class="brand-icon">HT</span><span class="brand-text">Hanta<span>Tracker</span></span></a>
+      <nav class="main-nav">
         <a href="index.html">Tableau de bord</a>
-        <a href="data.html">Données</a>
+        <a class="active" href="data.html">Données</a>
         <a href="prevention.html">Prévention</a>
         <a href="github.html">GitHub</a>
-      </div>
-    </nav>
-    <div class="container page-title">
-      <p class="eyebrow">Méthodologie</p>
-      <h1>Données et sources</h1>
-      <p class="lead">Le site utilise un fichier JSON versionné dans GitHub. Chaque mise à jour doit être rattachée à une source officielle.</p>
+      </nav>
     </div>
   </header>
 
-  <main class="container content-page">
-    <article class="card prose">
-      <h2>Source principale retenue</h2>
-      <p>La source principale du MVP est l’Organisation mondiale de la Santé, via le bulletin Disease Outbreak News du 8 mai 2026 concernant les infections à hantavirus liées au cluster du MV Hondius.</p>
-      <p><a href="https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON600" target="_blank" rel="noopener">Ouvrir la source OMS</a></p>
-    </article>
+  <main>
+    <section class="page-title">
+      <p class="kicker">Méthodologie</p>
+      <h1>Données et sources</h1>
+      <p>Cette page explique d’où viennent les chiffres, comment ils sont stockés et comment les mettre à jour.</p>
+    </section>
 
-    <article class="card prose">
-      <h2>Fichier utilisé par le site</h2>
-      <p>Le tableau de bord lit les données depuis <code>data/hantavirus.json</code>. Pour modifier les chiffres, il suffit d’éditer ce fichier puis de pousser les changements sur GitHub.</p>
-      <pre id="jsonPreview">Chargement…</pre>
-    </article>
+    <section class="content-grid">
+      <article class="panel">
+        <p class="kicker">Source principale</p>
+        <h2>Organisation mondiale de la Santé</h2>
+        <p>
+          Le jeu de données initial est basé sur un bulletin Disease Outbreak News de l’OMS.
+          Le fichier local <code>data/hantavirus.json</code> contient les valeurs utilisées par le tableau de bord.
+        </p>
+        <a class="inline-link" href="https://www.who.int/emergencies/disease-outbreak-news" target="_blank" rel="noopener">Voir les bulletins OMS →</a>
+      </article>
 
-    <article class="card prose">
-      <h2>Règle de publication</h2>
-      <p>Ne jamais publier un chiffre sans date, source et lien. Si une donnée n’est pas confirmée officiellement, elle doit être indiquée comme suspecte ou non confirmée.</p>
-    </article>
+      <article class="panel">
+        <p class="kicker">Format</p>
+        <h2>JSON public</h2>
+        <p>
+          Les données sont volontairement simples : date de mise à jour, source, cas totaux,
+          cas confirmés, cas suspects, décès et série temporelle.
+        </p>
+        <pre><code>{
+  "totalCases": 8,
+  "confirmedCases": 6,
+  "suspectedCases": 2,
+  "deaths": 3
+}</code></pre>
+      </article>
+    </section>
+
+    <section class="wide-panel">
+      <div>
+        <p class="kicker">Important</p>
+        <h2>Lecture prudente des chiffres</h2>
+        <p>
+          Les chiffres affichés concernent uniquement les signalements documentés dans la source utilisée.
+          Ils ne représentent pas une estimation exhaustive de tous les cas possibles dans le monde.
+        </p>
+      </div>
+      <a class="button secondary" href="data/hantavirus.json">Ouvrir le JSON</a>
+    </section>
   </main>
 
-  <footer class="footer">
-    <p>HantaTracker — données ouvertes, prudence sanitaire et traçabilité.</p>
+  <footer>
+    <span>HantaTracker — Données publiques et traçables.</span>
+    <span>Projet indépendant.</span>
   </footer>
 </body>
 </html>

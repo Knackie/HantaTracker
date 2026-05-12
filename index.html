@@ -3,15 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HantaTracker</title>
+  <meta name="description" content="HantaTracker - tableau de bord open source de suivi des signalements d'hantavirus, basé sur les données OMS." />
+  <title>HantaTracker — Tableau de bord</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="index.html" class="brand">HANTA<span>TRACKER</span></a>
-      <nav>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Accueil HantaTracker">
+        <span class="brand-icon">HT</span>
+        <span class="brand-text">Hanta<span>Tracker</span></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Navigation principale">
         <a class="active" href="index.html">Tableau de bord</a>
         <a href="data.html">Données</a>
         <a href="prevention.html">Prévention</a>
@@ -20,96 +27,126 @@
     </div>
   </header>
 
-  <main class="page">
-    <section class="intro card">
-      <div>
-        <p class="eyebrow">Données OMS · Projet open source</p>
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <p class="kicker">Données OMS · Projet open source</p>
         <h1>Suivi transparent des signalements d’hantavirus</h1>
-        <p>
-          Un tableau de bord inspiré de CovidTracker, centré sur les données OMS,
-          avec une traçabilité publique via GitHub.
+        <p class="hero-lead">
+          Un tableau de bord clair, vérifiable et public, inspiré de l’esprit CovidTracker,
+          pour suivre les signalements d’hantavirus à partir de sources sanitaires officielles.
         </p>
+
+        <div class="hero-actions">
+          <a class="button primary" href="data.html">Voir les données</a>
+          <a class="button secondary" href="https://github.com/knackie/HantaTracker" target="_blank" rel="noopener">Voir le dépôt</a>
+        </div>
       </div>
-      <div class="intro-actions">
-        <a href="data.html">Voir les sources</a>
-        <a href="https://github.com/knackie/HantaTracker" target="_blank">Voir le dépôt</a>
-      </div>
+
+      <aside class="hero-card">
+        <div class="hero-card-top">
+          <span class="pulse"></span>
+          <span>Dernier signalement suivi</span>
+        </div>
+        <strong>Cluster MV Hondius</strong>
+        <p>Bulletin OMS du 8 mai 2026. Données initiales consolidées dans le fichier JSON du projet.</p>
+      </aside>
     </section>
 
-    <section class="stats">
-      <article class="stat card">
-        <span>Cas totaux</span>
-        <strong>8</strong>
-        <p>confirmés + suspects</p>
+    <section class="summary" aria-label="Indicateurs principaux">
+      <article class="metric-card">
+        <span class="metric-label">Cas totaux</span>
+        <strong id="totalCases">8</strong>
+        <p>Confirmés + suspects</p>
       </article>
 
-      <article class="stat card">
-        <span>Cas confirmés</span>
-        <strong>6</strong>
-        <p>confirmation laboratoire</p>
+      <article class="metric-card">
+        <span class="metric-label">Cas confirmés</span>
+        <strong id="confirmedCases">6</strong>
+        <p>Confirmation laboratoire</p>
       </article>
 
-      <article class="stat card">
-        <span>Décès</span>
-        <strong>3</strong>
-        <p>signalés dans la source</p>
+      <article class="metric-card">
+        <span class="metric-label">Cas suspects</span>
+        <strong id="suspectedCases">2</strong>
+        <p>En investigation</p>
       </article>
 
-      <article class="stat card">
-        <span>Létalité observée</span>
-        <strong>37.5%</strong>
-        <p>sur ce cluster uniquement</p>
+      <article class="metric-card alert">
+        <span class="metric-label">Décès</span>
+        <strong id="deaths">3</strong>
+        <p>Létalité observée : <span id="fatalityRate">37,5%</span></p>
       </article>
     </section>
 
-    <section class="grid">
-      <article class="card panel">
-        <div class="panel-head">
+    <section class="dashboard-grid">
+      <article class="panel chart-panel">
+        <div class="panel-heading">
           <div>
-            <p class="eyebrow">Évolution</p>
+            <p class="kicker">Évolution</p>
             <h2>Cas suivis</h2>
           </div>
-          <span class="badge">OMS</span>
+          <span class="tag">OMS</span>
         </div>
-        <canvas id="casesChart"></canvas>
+        <div class="chart-wrap">
+          <canvas id="casesChart"></canvas>
+        </div>
+        <p class="caption">Les points sont fournis comme jeu de données d’exemple, à mettre à jour selon les publications officielles.</p>
       </article>
 
-      <article class="card panel">
-        <div class="panel-head">
+      <article class="panel">
+        <div class="panel-heading">
           <div>
-            <p class="eyebrow">Signalement majeur</p>
+            <p class="kicker">Signalement majeur</p>
             <h2>Cluster MV Hondius</h2>
           </div>
-          <span class="badge danger">Alerte</span>
+          <span class="tag danger">Suivi</span>
         </div>
+
         <p>
-          Le jeu de données initial est basé sur le bulletin OMS du 8 mai 2026
-          concernant un cluster de cas d’hantavirus associé au navire MV Hondius.
+          Le jeu de données initial reprend le bulletin de l’OMS du 8 mai 2026 concernant un
+          cluster de cas d’hantavirus associé au navire MV Hondius.
         </p>
-        <div class="mini-list">
-          <div><strong>8</strong><span>cas totaux</span></div>
-          <div><strong>6</strong><span>confirmés</span></div>
-          <div><strong>2</strong><span>suspects</span></div>
-          <div><strong>3</strong><span>décès</span></div>
+
+        <div class="detail-grid">
+          <div>
+            <strong>8</strong>
+            <span>cas totaux</span>
+          </div>
+          <div>
+            <strong>6</strong>
+            <span>confirmés</span>
+          </div>
+          <div>
+            <strong>2</strong>
+            <span>suspects</span>
+          </div>
+          <div>
+            <strong>3</strong>
+            <span>décès</span>
+          </div>
         </div>
+
+        <a class="inline-link" href="data.html">Consulter les sources →</a>
       </article>
     </section>
 
-    <section class="card source">
-      <h2>Transparence des données</h2>
-      <p>
-        HantaTracker est un projet indépendant. Les données affichées sont
-        documentées, sourcées et publiées avec le code du site afin de faciliter
-        la vérification et les contributions.
-      </p>
-      <a href="data.html">Consulter la méthodologie →</a>
+    <section class="wide-panel">
+      <div>
+        <p class="kicker">Transparence</p>
+        <h2>Des données simples à vérifier</h2>
+        <p>
+          Les chiffres affichés sont stockés dans un fichier JSON public, versionné sur GitHub.
+          Chaque mise à jour peut être relue, corrigée ou améliorée via une contribution.
+        </p>
+      </div>
+      <a class="button secondary" href="github.html">Fonctionnement GitHub</a>
     </section>
   </main>
 
   <footer>
-    HantaTracker — Projet indépendant et informatif. Ne remplace pas les recommandations des autorités sanitaires.
+    <span>HantaTracker — Projet indépendant et informatif.</span>
+    <span>Ne remplace pas les recommandations des autorités sanitaires.</span>
   </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>

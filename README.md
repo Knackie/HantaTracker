@@ -1,118 +1,83 @@
 # HantaTracker
 
-HantaTracker is an open-source web dashboard inspired by CovidTracker, focused on monitoring Hantavirus-related outbreaks and public health information using transparent, publicly available data sources.
+HantaTracker is an independent open-source web dashboard for tracking documented Hantavirus reports using public health sources.
 
-The goal of this project is to provide a simple, fast and accessible platform to visualize outbreak evolution, official reports, statistics and prevention information.
+The project is designed as a lightweight static website compatible with GitHub Pages.
 
 ## Features
 
-- Live outbreak statistics
-- Interactive charts
-- Responsive design
-- Public data transparency
-- GitHub-hosted datasets
-- Prevention and awareness page
-- Lightweight static deployment compatible with GitHub Pages
+- Clean public dashboard
+- Key Hantavirus indicators
+- Chart-based case evolution
+- Public JSON dataset
+- Source and methodology page
+- Prevention page
+- GitHub transparency page
+- No backend required
 
-## Data Sources
+## Data
 
-This project relies on official public health organizations and openly available datasets.
+The initial dataset is stored in:
 
-Main sources include:
+```txt
+data/hantavirus.json
+```
 
-- World Health Organization (WHO)
-- European Centre for Disease Prevention and Control (ECDC)
-- National public health agencies
-- Public epidemiological reports
+The current version uses public information from the World Health Organization Disease Outbreak News.
 
-Example WHO source:
-
-https://www.who.int/emergencies/disease-outbreak-news
-
-## Project Structure
+## Project structure
 
 ```txt
 /
 ├── index.html
+├── data.html
+├── prevention.html
+├── github.html
 ├── style.css
 ├── script.js
 ├── data/
 │   └── hantavirus.json
-├── assets/
-│   └── images/
 └── README.md
 ```
 
-## Local Development
+## Local use
 
-Clone the repository:
-
-```bash
-git clone https://github.com/knackie/hantatracker.git
-```
-
-Open the project directory:
-
-```bash
-cd hantatracker
-```
-
-Then simply open `index.html` in your browser.
-
-You can also use a lightweight local server:
+Open `index.html` directly in a browser, or run a small local server:
 
 ```bash
 python -m http.server 8080
 ```
 
-or
-
-```bash
-npx serve
-```
-
-## GitHub Pages Deployment
-
-This project is fully compatible with GitHub Pages.
-
-1. Push the repository to GitHub
-2. Open repository settings
-3. Go to `Pages`
-4. Select:
-   - Source: `Deploy from a branch`
-   - Branch: `main`
-   - Folder: `/root`
-5. Save
-
-Your website will be available at:
+Then open:
 
 ```txt
-https://knackie.github.io/hantatracker/
+http://localhost:8080
 ```
 
-## Contributing
+## GitHub Pages deployment
 
-Contributions are welcome.
+Push the files to a GitHub repository, then enable GitHub Pages from the repository settings.
 
-You can help by:
+Recommended settings:
 
-- Improving UI/UX
-- Adding new visualizations
-- Integrating additional public datasets
-- Improving accessibility
-- Translating the interface
-- Fixing bugs
+```txt
+Source: Deploy from a branch
+Branch: main
+Folder: /root
+```
+
+The site will be available at:
+
+```txt
+https://USERNAME.github.io/REPOSITORY/
+```
 
 ## Disclaimer
 
-HantaTracker is an independent open-source project and is not affiliated with the WHO, ECDC or any governmental health organization.
+HantaTracker is an independent informational project. It is not affiliated with the WHO or any public health authority.
 
-This platform is intended for informational and educational purposes only and must not replace professional medical advice or official public health recommendations.
+The website does not provide medical advice and must not replace official public health recommendations.
 
 ## License
 
-MIT License
-
-Copyright (c) 2026
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the Software without restriction.
+MIT

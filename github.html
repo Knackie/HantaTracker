@@ -3,140 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HantaTracker - GitHub</title>
+  <title>HantaTracker — GitHub</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="nav">
-      <a class="logo" href="index.html">HANTA<span>TRACKER</span></a>
-      <nav>
-        <a href="index.html">Accueil</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><span class="brand-icon">HT</span><span class="brand-text">Hanta<span>Tracker</span></span></a>
+      <nav class="main-nav">
+        <a href="index.html">Tableau de bord</a>
         <a href="data.html">Données</a>
-        <a class="active" href="github.html">GitHub</a>
         <a href="prevention.html">Prévention</a>
+        <a class="active" href="github.html">GitHub</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero">
-      <h1>Transparence GitHub</h1>
-      <div class="line"></div>
-      <p>
-        <strong>HantaTracker</strong> publie son code, ses données et son historique de mise à jour sur GitHub.
-        L’objectif est de rendre chaque chiffre traçable, vérifiable et améliorable par la communauté.
-      </p>
+    <section class="page-title">
+      <p class="kicker">Open source</p>
+      <h1>Traçabilité publique via GitHub</h1>
+      <p>Le code et les données sont publiés pour faciliter la vérification, les corrections et les contributions.</p>
     </section>
 
-    <h2 class="section-title">En un coup d'œil</h2>
-    <p class="update">Projet open source — données publiques — déploiement GitHub Pages</p>
-
-    <section class="stats-card">
-      <div class="stat">
-        <div class="value">100%</div>
-        <div class="trend">OPEN SOURCE</div>
-        <h3>Code public</h3>
-        <p>Le code du site est consultable, modifiable et améliorable depuis le dépôt GitHub.</p>
-      </div>
-
-      <div class="stat">
-        <div class="value">JSON</div>
-        <div class="trend">DONNÉES</div>
-        <h3>Format simple</h3>
-        <p>Les données sont stockées dans un format lisible et facilement réutilisable.</p>
-      </div>
-
-      <div class="stat">
-        <div class="value">Pages</div>
-        <div class="trend">HÉBERGEMENT</div>
-        <h3>GitHub Pages</h3>
-        <p>Le site est statique, rapide et hébergé directement via GitHub Pages.</p>
-      </div>
-
-      <div class="stat">
-        <div class="value">WHO</div>
-        <div class="trend">SOURCE</div>
-        <h3>Source officielle</h3>
-        <p>Les chiffres initiaux sont basés sur les informations publiées par l’OMS.</p>
-      </div>
+    <section class="summary">
+      <article class="metric-card">
+        <span class="metric-label">Code</span>
+        <strong>Public</strong>
+        <p>Consultable par tous</p>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Données</span>
+        <strong>JSON</strong>
+        <p>Simple et réutilisable</p>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Déploiement</span>
+        <strong>Pages</strong>
+        <p>Hébergement statique</p>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Contributions</span>
+        <strong>PR</strong>
+        <p>Corrections bienvenues</p>
+      </article>
     </section>
 
-    <section class="dashboard-grid">
+    <section class="content-grid">
       <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Repository</h2>
-            <p>
-              Le dépôt GitHub centralise le code source, les fichiers de données,
-              les corrections et les futures évolutions du projet.
-            </p>
-          </div>
-          <a class="btn" href="https://github.com/knackie/HantaTracker" target="_blank">Voir</a>
-        </div>
-
-        <div class="source-box">
-          URL du dépôt :
-          <br />
-          <a href="https://github.com/knackie/HantaTracker" target="_blank">
-            github.com/knackie/HantaTracker
-          </a>
-        </div>
+        <p class="kicker">Repository</p>
+        <h2>Dépôt du projet</h2>
+        <p>Le dépôt centralise le code HTML, CSS, JavaScript, les données JSON et la documentation.</p>
+        <a class="inline-link" href="https://github.com/knackie/HantaTracker" target="_blank" rel="noopener">Ouvrir GitHub →</a>
       </article>
 
       <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Données</h2>
-            <p>
-              Les données affichées par le site sont séparées du code pour faciliter
-              les mises à jour, les vérifications et les contributions.
-            </p>
-          </div>
-          <a class="btn" href="data.html">Plus</a>
-        </div>
-
-        <div class="chart">
-          <div class="chart-line"></div>
-        </div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Déploiement</h2>
-            <p>
-              Le site fonctionne sans serveur dédié. GitHub Pages sert directement
-              les fichiers HTML, CSS, JavaScript et JSON.
-            </p>
-          </div>
-        </div>
-
-        <div class="source-box">
-          Mode recommandé : GitHub Pages depuis la branche <strong>main</strong>, dossier <strong>/root</strong>.
-        </div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Contribuer</h2>
-            <p>
-              Toute contribution utile est possible : interface, accessibilité,
-              nouvelles visualisations, correction des textes ou amélioration des données.
-            </p>
-          </div>
-        </div>
-
-        <div class="chart">
-          <div class="chart-line red"></div>
-        </div>
+        <p class="kicker">Déploiement</p>
+        <h2>GitHub Pages</h2>
+        <p>Le site fonctionne sans backend. Il suffit de publier les fichiers à la racine du dépôt et d’activer GitHub Pages.</p>
       </article>
     </section>
   </main>
 
   <footer>
-    HantaTracker est un projet indépendant, open source et informatif.
+    <span>HantaTracker — Transparence open source.</span>
+    <span>Code et données publics.</span>
   </footer>
 </body>
 </html>
