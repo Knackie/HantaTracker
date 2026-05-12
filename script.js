@@ -34,12 +34,64 @@ function colorForStatus(status) {
 
   return "#667085";
 }
-
 function renderChart(data) {
   const canvas = document.getElementById("casesChart");
+
   if (!canvas || typeof Chart === "undefined") return;
 
   const timeline = data.timeline || [];
+  const distinctDates = new Set(timeline.map((item) => item.date));
+
+  if (distinctDates.size <= 1) {
+    new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels: [
+          "Confirmés",
+          "Suspects",
+          "Décès",
+          "Monitoring"
+        ],
+        datasets: [
+          {
+            label: "Cas",
+            data: [
+              data.confirmedCases || 0,
+              data.suspectedCases || 0,
+              data.deaths || 0,
+              data.monitoring || 0
+            ],
+            backgroundColor: [
+              "#1479d6",
+              "#f79009",
+              "#d92d20",
+              "#667085"
+            ],
+            borderRadius: 10
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+
+    return;
+  }
 
   new Chart(canvas, {
     type: "line",
@@ -47,88 +99,34 @@ function renderChart(data) {
       labels: timeline.map((item) => item.date),
       datasets: [
         {
-          label: "Cas documentés",
+          label: "Cas signalés",
           data: timeline.map((item) => item.total),
           borderColor: "#1479d6",
-          backgroundColor: "rgba(20, 121, 214, 0.14)",
+          backgroundColor: "rgba(20,121,214,0.12)",
           fill: true,
-          tension: 0.25,
-          pointRadius: 4,
-          borderWidth: 3
+          tension: 0.25
         },
         {
           label: "Confirmés",
           data: timeline.map((item) => item.confirmed),
           borderColor: "#079455",
-          backgroundColor: "rgba(7, 148, 85, 0.08)",
+          backgroundColor: "rgba(7,148,85,0.10)",
           fill: true,
-          tension: 0.25,
-          pointRadius: 4,
-          borderWidth: 3
+          tension: 0.25
         },
         {
           label: "Décès",
           data: timeline.map((item) => item.deaths),
           borderColor: "#d92d20",
-          backgroundColor: "rgba(217, 45, 32, 0.08)",
+          backgroundColor: "rgba(217,45,32,0.10)",
           fill: true,
-          tension: 0.25,
-          pointRadius: 4,
-          borderWidth: 3
+          tension: 0.25
         }
       ]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        intersect: false,
-        mode: "index"
-      },
-      plugins: {
-        legend: {
-          position: "top",
-          align: "end",
-          labels: {
-            usePointStyle: true,
-            color: "#475467",
-            font: {
-              family: "Inter",
-              weight: "700"
-            }
-          }
-        },
-        tooltip: {
-          backgroundColor: "#101828",
-          padding: 12
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1,
-            color: "#667085"
-          },
-          grid: {
-            color: "rgba(16, 24, 40, 0.08)"
-          },
-          border: {
-            display: false
-          }
-        },
-        x: {
-          ticks: {
-            color: "#667085"
-          },
-          grid: {
-            color: "rgba(16, 24, 40, 0.05)"
-          },
-          border: {
-            display: false
-          }
-        }
-      }
+      maintainAspectRatio: false
     }
   });
 }
