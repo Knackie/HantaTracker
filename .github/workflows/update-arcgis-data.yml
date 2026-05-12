@@ -1,71 +1,31 @@
-const https = require("https");
+name: Update ArcGIS HantaTracker data
 
-const DASHBOARD_ID = "5c68442d2afc42d7ba2696e4cd393729";
-const URL = `https://www.arcgis.com/sharing/rest/content/items/${DASHBOARD_ID}/data?f=json`;
+on:
+  schedule:
+    - cron: "20 6 * * *"
+  workflow_dispatch:
 
-function fetchJson(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, { headers: { "User-Agent": "HantaTrackerDebug/1.0" } }, (res) => {
-      let body = "";
-      res.on("data", (chunk) => (body += chunk));
-      res.on("end", () => {
-        try {
-          resolve(JSON.parse(body));
-        } catch {
-          console.log(body.slice(0, 1000));
-          reject(new Error("Invalid JSON"));
-        }
-      });
-    }).on("error", reject);
-  });
-}
+permissions:
+  contents: write
 
-function walk(obj, path = "") {
-  if (!obj) return;
+jobs:
+  update-arcgis-data:
+    runs-on: ubuntu-latest
 
-  if (typeof obj === "string") {
-    if (
-      obj.includes("FeatureServer") ||
-      obj.includes("MapServer") ||
-      obj.includes("itemId") ||
-      obj.includes("layer")
-    ) {
-      console.log(path, "=>", obj);
-    }
-    return;
-  }
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  if (Array.isArray(obj)) {
-    obj.forEach((item, index) => walk(item, `${path}[${index}]`));
-    return;
-  }
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
-  if (typeof obj === "object") {
-    for (const [key, value] of Object.entries(obj)) {
-      if (
-        key.toLowerCase().includes("item") ||
-        key.toLowerCase().includes("layer") ||
-        key.toLowerCase().includes("url") ||
-        key.toLowerCase().includes("data")
-      ) {
-        console.log(path ? `${path}.${key}` : key, "=", value);
-      }
+      - name: Run ArcGIS parser
+        run: node scripts/update-arcgis-data.js
 
-      walk(value, path ? `${path}.${key}` : key);
-    }
-  }
-}
-
-async function main() {
-  const json = await fetchJson(URL);
-
-  console.log("Dashboard JSON loaded");
-  console.log("Top-level keys:", Object.keys(json));
-
-  walk(json);
-}
-
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+      - name: Commit updated JSON
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update ArcGIS HantaTracker data"
+          file_pattern: data/arcgis_hantavirus.json
