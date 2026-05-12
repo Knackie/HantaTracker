@@ -1,17 +1,15 @@
-name: Update HantaTracker data
+name: Update ArcGIS HantaTracker data
 
 on:
   schedule:
-    - cron: "15 6 * * *"
+    - cron: "20 6 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  update-data:
+  update-arcgis-data:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +21,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Update data from WHO
-        run: node scripts/update-data.js
+      - name: Run ArcGIS parser
+        run: node scripts/update-arcgis-data.js
 
-      - name: Commit updated data
+      - name: Commit updated JSON
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update HantaTracker data"
-          file_pattern: data/hantavirus.json
+          commit_message: "Update ArcGIS HantaTracker data"
+          file_pattern: data/arcgis_hantavirus.json
