@@ -1,0 +1,55 @@
+{
+  "project": "HantaTracker",
+  "lastUpdate": "2026-05-08",
+  "source": {
+    "name": "Organisation mondiale de la Santé",
+    "shortName": "OMS",
+    "url": "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON600",
+    "document": "Disease Outbreak News: Hantavirus infections",
+    "publishedAt": "2026-05-08"
+  },
+  "event": {
+    "title": "Cluster d’infections à hantavirus lié au MV Hondius",
+    "area": "Navire MV Hondius / exposition internationale",
+    "summary": "Données initiales issues du bulletin OMS du 8 mai 2026. Les chiffres concernent un cluster précis et ne représentent pas une incidence globale mondiale ou française.",
+    "status": "Surveillance"
+  },
+  "metrics": {
+    "totalCases": 8,
+    "confirmedCases": 6,
+    "suspectedCases": 2,
+    "deaths": 3,
+    "hospitalized": null,
+    "caseFatalityRate": 37.5
+  },
+  "timeline": [
+    {
+      "date": "2026-05-08",
+      "totalCases": 8,
+      "confirmedCases": 6,
+      "suspectedCases": 2,
+      "deaths": 3
+    }
+  ],
+  "locations": [
+    {
+      "name": "MV Hondius",
+      "type": "Cluster",
+      "cases": 8,
+      "description": "Cas rattachés à un événement spécifique décrit dans le bulletin OMS."
+    },
+    {
+      "name": "International",
+      "type": "Surveillance",
+      "cases": 8,
+      "description": "Les personnes concernées peuvent dépendre de plusieurs pays selon les investigations."
+    },
+    {
+      "name": "France",
+      "type": "À compléter",
+      "cases": 0,
+      "description": "Aucune donnée nationale intégrée dans ce MVP. Ajouter une source officielle avant publication de chiffres français."
+    }
+  ],
+  "disclaimer": "Les chiffres doivent être vérifiés avant réutilisation. Ce site est un tableau de bord informatif, pas un outil de diagnostic médical."
+}

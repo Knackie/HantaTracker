@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitHub — HantaTracker</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="page-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">HantaTracker</a>
+      <div class="nav-links">
+        <a href="index.html">Tableau de bord</a>
+        <a href="data.html">Données</a>
+        <a href="prevention.html">Prévention</a>
+        <a href="github.html">GitHub</a>
+      </div>
+    </nav>
+    <div class="container page-title">
+      <p class="eyebrow">Open source</p>
+      <h1>Déploiement GitHub Pages</h1>
+      <p class="lead">Ce site est conçu pour être publié directement depuis un dépôt GitHub, sans backend et sans build complexe.</p>
+    </div>
+  </header>
+
+  <main class="container content-page">
+    <article class="card prose">
+      <h2>Déployer</h2>
+      <p>Crée un dépôt GitHub, envoie ces fichiers à la racine, puis active GitHub Pages dans les paramètres du dépôt. La source doit être la branche <code>main</code> et le dossier <code>/root</code>.</p>
+    </article>
+
+    <article class="card prose">
+      <h2>Commandes</h2>
+      <pre>git init
+git add .
+git commit -m "Initial HantaTracker"
+git branch -M main
+git remote add origin https://github.com/TON_USER/hantatracker.git
+git push -u origin main</pre>
+    </article>
+
+    <article class="card prose">
+      <h2>URL finale</h2>
+      <p>Après activation de GitHub Pages, le site sera disponible à l’adresse <code>https://TON_USER.github.io/hantatracker/</code>.</p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <p>HantaTracker — pensé pour GitHub Pages.</p>
+  </footer>
+</body>
+</html>

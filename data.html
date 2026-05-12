@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Données — HantaTracker</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <script defer src="assets/data.js"></script>
+</head>
+<body>
+  <header class="page-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">HantaTracker</a>
+      <div class="nav-links">
+        <a href="index.html">Tableau de bord</a>
+        <a href="data.html">Données</a>
+        <a href="prevention.html">Prévention</a>
+        <a href="github.html">GitHub</a>
+      </div>
+    </nav>
+    <div class="container page-title">
+      <p class="eyebrow">Méthodologie</p>
+      <h1>Données et sources</h1>
+      <p class="lead">Le site utilise un fichier JSON versionné dans GitHub. Chaque mise à jour doit être rattachée à une source officielle.</p>
+    </div>
+  </header>
+
+  <main class="container content-page">
+    <article class="card prose">
+      <h2>Source principale retenue</h2>
+      <p>La source principale du MVP est l’Organisation mondiale de la Santé, via le bulletin Disease Outbreak News du 8 mai 2026 concernant les infections à hantavirus liées au cluster du MV Hondius.</p>
+      <p><a href="https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON600" target="_blank" rel="noopener">Ouvrir la source OMS</a></p>
+    </article>
+
+    <article class="card prose">
+      <h2>Fichier utilisé par le site</h2>
+      <p>Le tableau de bord lit les données depuis <code>data/hantavirus.json</code>. Pour modifier les chiffres, il suffit d’éditer ce fichier puis de pousser les changements sur GitHub.</p>
+      <pre id="jsonPreview">Chargement…</pre>
+    </article>
+
+    <article class="card prose">
+      <h2>Règle de publication</h2>
+      <p>Ne jamais publier un chiffre sans date, source et lien. Si une donnée n’est pas confirmée officiellement, elle doit être indiquée comme suspecte ou non confirmée.</p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <p>HantaTracker — données ouvertes, prudence sanitaire et traçabilité.</p>
+  </footer>
+</body>
+</html>

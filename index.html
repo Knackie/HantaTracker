@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HantaTracker — Suivi hantavirus</title>
+  <meta name="description" content="Tableau de bord open data sur les signalements d’hantavirus, basé sur les publications OMS et publié via GitHub Pages." />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="assets/app.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <a class="brand" href="index.html">HantaTracker</a>
+      <div class="nav-links">
+        <a href="index.html">Tableau de bord</a>
+        <a href="data.html">Données</a>
+        <a href="prevention.html">Prévention</a>
+        <a href="github.html">GitHub</a>
+      </div>
+    </nav>
+    <section class="hero-content">
+      <p class="eyebrow">Open data santé publique</p>
+      <h1>Suivi transparent des signalements d’hantavirus</h1>
+      <p class="lead">Un tableau de bord inspiré de CovidTracker, centré sur les données OMS, avec une traçabilité publique via GitHub.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="data.html">Voir les sources</a>
+        <a class="button secondary" href="github.html">Voir le dépôt</a>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="container status-row" id="status"></section>
+
+    <section class="container grid two-cols">
+      <article class="card large-card">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Évolution</p>
+            <h2>Cas suivis</h2>
+          </div>
+          <span class="badge">OMS</span>
+        </div>
+        <canvas id="casesChart" height="110"></canvas>
+      </article>
+
+      <article class="card">
+        <p class="eyebrow">Dernier bulletin</p>
+        <h2 id="eventTitle">Chargement…</h2>
+        <p id="eventSummary" class="muted"></p>
+        <dl class="meta-list">
+          <div><dt>Dernière mise à jour</dt><dd id="lastUpdate">—</dd></div>
+          <div><dt>Source principale</dt><dd id="mainSource">—</dd></div>
+          <div><dt>Zone</dt><dd id="area">—</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="container grid three-cols" id="regions"></section>
+
+    <section class="container card notice">
+      <h2>Important</h2>
+      <p>Ce site n’est pas un outil médical et ne remplace pas les recommandations des autorités sanitaires. Les chiffres affichés proviennent du fichier local <code>data/hantavirus.json</code>, à mettre à jour avec les publications officielles.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Projet open source publié avec GitHub Pages. Données à vérifier systématiquement auprès des sources officielles.</p>
+  </footer>
+</body>
+</html>
