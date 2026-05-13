@@ -279,17 +279,39 @@ async function getLayerUrl() {
 }
 
 async function queryLayer(layerUrl) {
-  const url =
-    layerUrl + "/query?where=1%3D1&outFields=*&returnGeometry=true&f=json";
+  const pageSize = 2000;
+  let offset = 0;
+  let allFeatures = [];
 
-  const json = await fetchJson(url);
+  while (true) {
+    const url =
+      layerUrl +
+      "/query?where=1%3D1" +
+      "&outFields=*" +
+      "&returnGeometry=true" +
+      "&f=json" +
+      "&resultRecordCount=" +
+      pageSize +
+      "&resultOffset=" +
+      offset;
 
-  if (!json.features || !Array.isArray(json.features)) {
-    console.log(JSON.stringify(json, null, 2).slice(0, 2000));
-    throw new Error("La couche ne retourne pas de features.");
+    const json = await fetchJson(url);
+
+    if (!json.features || !Array.isArray(json.features)) {
+      console.log(JSON.stringify(json, null, 2).slice(0, 2000));
+      throw new Error("La couche ne retourne pas de features.");
+    }
+
+    allFeatures = allFeatures.concat(json.features);
+
+    if (!json.exceededTransferLimit || json.features.length === 0) {
+      break;
+    }
+
+    offset += pageSize;
   }
 
-  return json.features.map((feature, index) => {
+  return allFeatures.map((feature, index) => {
     const attrs = feature.attributes || {};
     const coords = toLonLat(feature.geometry);
 
@@ -300,7 +322,7 @@ async function queryLayer(layerUrl) {
       date: normalizeDate(attrs),
       lat: coords.lat,
       lon: coords.lon,
-      attributes: attrs
+      attributes: attrs,
     };
   });
 }
