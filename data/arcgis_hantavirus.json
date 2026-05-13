@@ -6,6 +6,7 @@
   "sourceItemId": "b8e81eac2762420fac16601290f547f6",
   "sourceLayerId": "19dff6a5782-layer-2",
   "sourceLayerUrl": "https://services1.arcgis.com/wb4Og4gH5mvzQAIV/arcgis/rest/services/Tracking_Hantavirus_2026/FeatureServer/1",
+  "exposed": 107,
   "totalCases": 18,
   "confirmedCases": 8,
   "suspectedCases": 7,
