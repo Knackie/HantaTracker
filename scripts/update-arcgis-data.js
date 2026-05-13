@@ -167,32 +167,29 @@ function classify(records) {
   let suspected = 0;
   let deaths = 0;
   let monitoring = 0;
+  let exposed = 0;
   let unknown = 0;
 
   for (const record of records) {
     const status = String(record.status || "").toLowerCase();
 
-    if (
-      status.includes("deceased") ||
-      status.includes("death") ||
-      status.includes("dead")
-    ) {
+    if (status.includes("deceased") || status.includes("death") || status.includes("dead")) {
       deaths++;
     } else if (status.includes("confirm")) {
       confirmed++;
     } else if (status.includes("suspect")) {
       suspected++;
-    } else if (
-      status.includes("monitoring") ||
-      status.includes("quarantine")
-    ) {
+    } else if (status.includes("monitoring") || status.includes("quarantine")) {
       monitoring++;
     } else {
       unknown++;
     }
   }
 
+  exposed = records.length;
+
   return {
+    exposed,
     totalCases: confirmed + suspected + deaths,
     confirmedCases: confirmed,
     suspectedCases: suspected,
