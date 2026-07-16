@@ -1,5 +1,5 @@
 {
-  "lastUpdate": "2026-07-15",
+  "lastUpdate": "2026-07-16",
   "sourceName": "ArcGIS Dashboard - Hantavirus",
   "dashboardId": "5c68442d2afc42d7ba2696e4cd393729",
   "dashboardUrl": "https://www.arcgis.com/apps/dashboards/5c68442d2afc42d7ba2696e4cd393729",
@@ -16,7 +16,7 @@
   "totalRecords": 107,
   "timeline": [
     {
-      "date": "07-15",
+      "date": "07-16",
       "total": 107,
       "confirmed": 8,
       "deaths": 3
